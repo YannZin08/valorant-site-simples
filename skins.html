@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorant Skins</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Valorant Skins</h1>
+            <p>Confira as skins do Valorant, valores em VP e gameplay.</p>
+
+            <div class="hero-buttons">
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                    ← Voltar para Miras
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKINS -->
+    <section class="miras-section">
+        <div class="container">
+            <h2>Skins em Destaque</h2>
+            <div class="filters">
+                <button class="filter-btn active" data-filter="all">Todas</button>
+                <button class="filter-btn" data-filter="vandal">Vandal</button>
+                <button class="filter-btn" data-filter="phantom">Phantom</button>
+                <button class="filter-btn" data-filter="knife">Knife</button>
+            </div>
+
+            <div class="miras-grid">
+
+                <div class="card skin-card" data-category="vandal">
+                    <div class="card-image">
+                        <span class="badge badge-premium">Premium</span>
+                        <img src="assets/skins/elderflame.png" alt="Elderflame Vandal">
+                    </div>
+
+                    <div class="card-content">
+                        <h3>Elderflame Vandal</h3>
+                        <p>Valor: <strong>2.475 VP</strong></p>
+
+                        <a href="https://www.youtube.com/watch?v=SEU_VIDEO" target="_blank" class="btn btn-usar">
+                            🎥 Ver Gameplay
+                        </a>
+                    </div>
+                </div>
+
+
+                <!-- OUTRA SKIN -->
+                <div class="card skin-card" data-category="phantom">
+                    <div class="card-image">
+                        <span class="badge badge-deluxe">Deluxe</span>
+                        <img src="assets/skins/oni.png" alt="Oni Phantom">
+                    </div>
+
+                    <div class="card-content">
+                        <h3>Oni Phantom</h3>
+                        <p>Valor: <strong>1.775 VP</strong></p>
+
+                        <a href="https://www.youtube.com/watch?v=SEU_VIDEO" target="_blank" class="btn btn-usar">
+                            🎥 Ver Gameplay
+                        </a>
+                    </div>
+                </div>
+                <div class="card skin-card" data-category="knife">
+                    <div class="card-image">
+                        <span class="badge badge-exclusive">Exclusive</span>
+                        <img src="assets/skins/reaver-knife.png" alt="Reaver Knife">
+                    </div>
+
+                    <div class="card-content">
+                        <h3>Reaver Knife</h3>
+                        <p>Valor: <strong>4.350 VP</strong></p>
+
+                        <a href="https://www.youtube.com/watch?v=SEU_VIDEO" target="_blank" class="btn btn-usar">
+                            🎥 Ver Gameplay
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p>© 2026 Valorant Skins by Yann. Não afiliado à Riot Games.</p>
+    </footer>
+    <script src="skins.js"></script>
+</body>
+
+</html>
