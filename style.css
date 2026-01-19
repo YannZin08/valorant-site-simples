@@ -257,6 +257,19 @@ body {
 .card:hover .card-image img {
     transform: scale(1.05);
 }
+.skin-card .card-image {
+    height: 220px; /* altura controlada */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.skin-card .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* NÃO CORTA */
+}
 
 .badge {
     position: absolute;
