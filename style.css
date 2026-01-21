@@ -531,34 +531,25 @@ body {
 
 .agents-list {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 4 por linha */
-    gap: 22px;
-    margin-top: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px; /* antes estava 12px */
 }
 
 .agent {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
 }
 
 .agent img {
-    width: 96px;
-    height: 100px;
-
-    object-fit: contain;   /* 🔥 NÃO ESTICA */
-    object-position: center;
-
-    border-radius: 18px;
-    background: rgba(15, 23, 42, 0.9);
-    padding: 10px;
-
-    border: 2px solid rgba(168, 85, 247, 0.6);
-    box-shadow: 0 0 22px rgba(168, 85, 247, 0.5);
-
-    image-rendering: auto;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 96px;           /* MAIOR */
+    height: 96px;
+    object-fit: contain;   /* não estica */
+    border-radius: 0;      /* remove formato de card */
+    background: none;      /* remove fundo */
+    box-shadow: none;      /* remove glow quadrado */
+    gap: 4px;
 }
 
 .agent img:hover {
@@ -632,4 +623,10 @@ body {
 .agent-map-card:hover {
     transform: translateY(-6px);
     transition: transform 0.3s ease;
+}
+@media (min-width: 1024px) {
+    body {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
 }
