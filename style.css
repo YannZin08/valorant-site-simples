@@ -630,3 +630,26 @@ body {
         padding-right: 24px;
     }
 }
+@media (max-width: 768px) {
+
+    .agents-list {
+        grid-template-columns: repeat(3, 1fr); /* antes 4 */
+        gap: 6px;
+    }
+
+    .agent img {
+        width: 72px;     /* menor no celular */
+        height: 72px;
+    }
+}
+@media (max-width: 420px) {
+
+    .agents-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .agent img {
+        width: 64px;
+        height: 64px;
+    }
+}
