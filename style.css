@@ -653,3 +653,56 @@ body {
         height: 64px;
     }
 }
+.map-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 10, 25, 0.85);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.map-modal.active {
+    display: flex;
+}
+
+.map-modal-content {
+    background: #0e1430;
+    border-radius: 18px;
+    padding: 20px;
+    max-width: 900px;
+    width: 95%;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(120, 90, 255, 0.4);
+}
+
+.map-modal-content h2 {
+    margin-bottom: 14px;
+    font-size: 1.8rem;
+}
+
+.map-modal-content img {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #fff;
+    cursor: pointer;
+}
+
+.map-hint {
+    margin-top: 10px;
+    opacity: 0.6;
+    font-size: 0.85rem;
+}

@@ -29,8 +29,7 @@
 
         <!-- MAPA: CORRODE -->
         <div class="card agent-map-card">
-
-            <div class="card-image">
+            <div class="card-image" onclick="openMap('Corrode', 'assets/img-mapas/corrode.jpg')">
                 <img src="assets/img-mapas/corroid.jpg" alt="Corrode">
             </div>
 
@@ -53,11 +52,10 @@
 
         <!-- MAPA: BIND -->
         <div class="card agent-map-card">
-
-            <div class="card-image">
+            <div class="card-image" onclick="openMap('Bind', 'assets/img-mapas/Bind_minimap.webp')">
                 <img src="assets/img-mapas/bind.png" alt="Bind">
             </div>
-
+            
             <div class="card-content">
                 <h3>BIND</h3>
 
@@ -77,9 +75,8 @@
 
         <!-- MAPA: HAVEN -->
         <div class="card agent-map-card">
-
-            <div class="card-image">
-                <img src="assets/img-mapas/haven.png" alt="Haven">
+            <div class="card-image" onclick="openMap('Haven', 'assets/img-mapas/haven_minimap.webp')">
+                <img src="assets/img-mapas/corroid.jpg" alt="Corrode">
             </div>
 
             <div class="card-content">
@@ -100,10 +97,10 @@
         </div>
 
 
+        <!-- MAPA: Abyss -->
         <div class="card agent-map-card">
-
-            <div class="card-image">
-                <img src="assets/img-mapas/abyss.png" alt="ABYSS">
+            <div class="card-image" onclick="openMap('Abyss', 'assets/img-mapas/Abyss_minimap.webp')">
+                <img src="assets/img-mapas/abyss.png" alt="Abyss">
             </div>
 
             <div class="card-content">
@@ -124,10 +121,10 @@
 
 
 
+        <!-- MAPA: Pearl -->
         <div class="card agent-map-card">
-
-            <div class="card-image">
-                <img src="assets/img-mapas/pearl.png" alt="PEARL">
+            <div class="card-image" onclick="openMap('Abyss', 'assets/img-mapas/Pearl_minimap.webp')">
+                <img src="assets/img-mapas/pearl.png" alt="Pearl">
             </div>
 
             <div class="card-content">
@@ -148,10 +145,10 @@
 
 
 
+        <!-- MAPA: Split -->
         <div class="card agent-map-card">
-
-            <div class="card-image">
-                <img src="assets/img-mapas/split.png" alt="SPLIT">
+            <div class="card-image" onclick="openMap('Split', 'assets/img-mapas/Split_minimap.webp')">
+                <img src="assets/img-mapas/split.png" alt="Split">
             </div>
 
             <div class="card-content">
@@ -172,9 +169,9 @@
 
 
 
+        <!-- MAPA: Breeze -->
         <div class="card agent-map-card">
-
-            <div class="card-image">
+            <div class="card-image" onclick="openMap('Breeze', 'assets/img-mapas/Breeze_minimap.webp')">
                 <img src="assets/img-mapas/breeze.jpg" alt="Breeze">
             </div>
 
@@ -195,7 +192,19 @@
         </div>
 
 
+        <div class="map-modal" id="mapModal">
+        <div class="map-modal-content">
+            <button class="close-modal" onclick="closeMap()">✕</button>
 
+            <h2 id="mapTitle">Mapa</h2>
+
+            <img id="mapImage" src="" alt="Mapa Top View">
+
+            <p class="map-hint">
+                
+        </div>
+        <script src="script.js"></script>
+    </div>
 
 
 

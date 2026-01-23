@@ -20,3 +20,12 @@ function copiarID(button) {
         alert('Erro ao copiar ID');
     });
 }
+function openMap(name, image) {
+    document.getElementById('mapTitle').innerText = name;
+    document.getElementById('mapImage').src = image;
+    document.getElementById('mapModal').classList.add('active');
+}
+
+function closeMap() {
+    document.getElementById('mapModal').classList.remove('active');
+}
