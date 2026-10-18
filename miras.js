@@ -59,71 +59,62 @@ function renderizarMiras() {
 
     grid.innerHTML = '';
     todas.forEach(item => grid.appendChild(criarCard(item)));
+
+    document.getElementById('miras-contagem').textContent =
+        todas.length === 1 ? '1 salva' : `${todas.length} salvas`;
+
     redesenharTudo();
 }
 
-function criarCard(item) {
-    const mira = lerCodigoMira(item.codigo);
+const ICONE_LIXEIRA = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6" />
+    </svg>`;
 
+function criarCard(item) {
     const card = document.createElement('div');
-    card.className = 'card mira-card';
+    card.className = 'mira-card';
     card.innerHTML = `
-        <div class="card-image mira-preview">
+        <div class="mira-preview">
             <canvas></canvas>
         </div>
-        <div class="card-content">
-            <h3 class="mira-nome"></h3>
-            <div class="mira-tags"></div>
-            <div class="id-container">
+        <div class="mira-rodape">
+            <div class="mira-info">
+                <h3 class="mira-nome"></h3>
+            </div>
+            <div class="mira-acoes">
                 <code class="hidden-code"></code>
-                <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
+                <button type="button" class="mira-copiar" onclick="copiarID(this)">Copiar</button>
             </div>
         </div>
     `;
 
     // textContent (e não innerHTML) para o nome: assim ninguém injeta HTML pelo formulário
-    card.querySelector('.mira-nome').textContent = item.nome;
+    const nome = card.querySelector('.mira-nome');
+    nome.textContent = item.nome;
+    nome.title = item.nome; // nome completo aparece ao passar o mouse, se for cortado
     card.querySelector('code').textContent = item.codigo;
     card.querySelector('canvas').dataset.codigo = item.codigo;
-
-    // Etiquetas: cor + o que a mira tem
-    const tags = card.querySelector('.mira-tags');
-    if (mira) {
-        tags.appendChild(criarTag(mira.cor.nome, mira.cor.hex));
-        resumoDaMira(mira).forEach(texto => tags.appendChild(criarTag(texto)));
-    } else {
-        tags.appendChild(criarTag('Código inválido'));
-    }
 
     // Miras do navegador ganham selo e botão de excluir
     if (item.doNavegador) {
         const selo = document.createElement('span');
-        selo.className = 'badge badge-custom';
+        selo.className = 'mira-selo';
         selo.textContent = 'Sua';
-        card.querySelector('.mira-preview').appendChild(selo);
+        card.querySelector('.mira-info').appendChild(selo);
 
         const botaoExcluir = document.createElement('button');
         botaoExcluir.type = 'button';
-        botaoExcluir.className = 'btn-excluir';
-        botaoExcluir.textContent = 'Excluir';
+        botaoExcluir.className = 'mira-excluir';
+        botaoExcluir.title = 'Excluir mira';
+        botaoExcluir.setAttribute('aria-label', `Excluir ${item.nome}`);
+        botaoExcluir.innerHTML = ICONE_LIXEIRA;
         botaoExcluir.addEventListener('click', () => excluirMira(item.id, item.nome));
-        card.querySelector('.card-content').appendChild(botaoExcluir);
+        card.querySelector('.mira-acoes').prepend(botaoExcluir);
     }
 
     return card;
-}
-
-function criarTag(texto, corHex) {
-    const tag = document.createElement('span');
-    tag.className = 'mira-tag';
-    if (corHex) {
-        const bolinha = document.createElement('i');
-        bolinha.className = 'mira-tag-cor';
-        bolinha.style.background = corHex;
-        tag.appendChild(bolinha);
-    }
-    tag.appendChild(document.createTextNode(texto));
-    return tag;
 }
 
 function excluirMira(id, nome) {
@@ -151,6 +142,7 @@ function atualizarPrevia() {
     desenharMira(canvasPrevia, mira, visual);
 
     dicaPrevia.hidden = Boolean(mira);
+    canvasPrevia.parentElement.classList.toggle('travada', Boolean(mira)); // visor fecha na mira
     botaoAdicionar.disabled = !mira;
     textoErro.textContent = codigo && !mira
         ? 'Esse código não parece ser de uma mira do Valorant.'
