@@ -706,3 +706,234 @@ body {
     opacity: 0.6;
     font-size: 0.85rem;
 }
+/* ============================================
+   MIRAS — controles, formulário e cards gerados
+   ============================================ */
+
+.miras-section {
+    padding-top: 20px;
+    padding-bottom: 80px;
+}
+
+.miras-topo {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.miras-topo h2 {
+    margin-bottom: 0;
+}
+
+.miras-controles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.controle {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.controle-rotulo {
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #94a3b8;
+}
+
+.controle-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.controle-opcoes .filter-btn {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+}
+
+/* Prévia: o canvas ocupa todo o espaço da imagem */
+.mira-preview canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* ---------- Formulário ---------- */
+
+.add-mira {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 40px;
+    border-color: rgba(34, 211, 238, 0.25);
+}
+
+.add-mira:hover {
+    transform: none; /* não "pula" como os cards */
+}
+
+.add-mira-campos {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 25px;
+}
+
+.add-mira-campos h3 {
+    font-size: 1.3rem;
+    color: #f1f5f9;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #cbd5e1;
+}
+
+.campo small {
+    font-weight: 400;
+    color: #64748b;
+}
+
+.campo input,
+.campo textarea {
+    width: 100%;
+    padding: 10px 12px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.25);
+    border-radius: 8px;
+    color: #e0e7ff;
+    font: inherit;
+    font-weight: 400;
+    resize: vertical;
+}
+
+.campo textarea {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+}
+
+.campo input:focus,
+.campo textarea:focus {
+    outline: none;
+    border-color: #22d3ee;
+    box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
+}
+
+.add-mira-erro {
+    min-height: 1.2em;
+    font-size: 0.85rem;
+    color: #f87171;
+}
+
+.add-mira .btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.add-mira .mira-preview {
+    height: auto;
+    min-height: 260px;
+}
+
+.previa-dica {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.75);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+}
+
+.previa-dica[hidden] {
+    display: none;
+}
+
+/* ---------- Cards de mira ---------- */
+
+.mira-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+.mira-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    font-size: 0.78rem;
+    color: #cbd5e1;
+}
+
+.mira-tag-cor {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.btn-excluir {
+    width: 100%;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid rgba(248, 113, 113, 0.4);
+    border-radius: 8px;
+    color: #f87171;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-excluir:hover {
+    background: rgba(248, 113, 113, 0.1);
+}
+
+.mira-nova {
+    animation: miraNova 1.6s ease-out;
+}
+
+@keyframes miraNova {
+    from {
+        box-shadow: 0 0 0 3px #22d3ee, 0 0 40px rgba(34, 211, 238, 0.6);
+    }
+
+    to {
+        box-shadow: 0 0 0 0 transparent;
+    }
+}
+
+@media (max-width: 768px) {
+    .add-mira {
+        grid-template-columns: 1fr;
+    }
+
+    .add-mira .mira-preview {
+        order: -1; /* no celular a prévia fica em cima */
+        min-height: 200px;
+    }
+}

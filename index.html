@@ -27,139 +27,63 @@
         </div>
     </section>
 
-    <!-- Miras Grid -->
+    <!-- Miras -->
     <section class="miras-section">
         <div class="container">
-            <h2>Miras Disponíveis</h2>
+            <div class="miras-topo">
+                <h2>Miras Disponíveis</h2>
 
-            <div class="miras-grid">
-                <!-- Card 1 -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/1.png" alt="1">
-                    </div>
-                    <div class="card-content">
-                        <div class="id-container">
-                            <code
-                                class="hidden-code">0;s;1;P;u;000000FF;h;0;d;1;z;1;a;0.0;f;0;0l;3;0v;3;0o;2;0a;1;0f;0;1b;0;S;c;0;s;1.0</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
+                <!-- Opções de visualização (valem para todas as prévias) -->
+                <div class="miras-controles">
+                    <div class="controle">
+                        <span class="controle-rotulo">Fundo</span>
+                        <div class="controle-opcoes" id="opcoes-fundo">
+                            <button type="button" class="filter-btn active" data-fundo="parede">Parede</button>
+                            <button type="button" class="filter-btn" data-fundo="clara">Clara</button>
+                            <button type="button" class="filter-btn" data-fundo="escura">Escura</button>
+                            <button type="button" class="filter-btn" data-fundo="mapa">Mapa</button>
                         </div>
                     </div>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/2.png" alt="2">
-                    </div>
-                    <div class="card-content">
-                        <div class="id-container">
-                            <code
-                                class="hidden-code">0;s;1;P;u;000000FF;h;0;0l;3;0v;3;0o;1;0a;1;0f;0;1b;0;S;c;4;s;0.6</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/3.png" alt="3">
-
-                    </div>
-                    <div class="card-content">
-                        <div class="id-container">
-                            <code class="hidden-code">0;c;1;P;c;5;u;000000FF;h;0;d;1;z;3;f;0;m;1;0b;0;1b;0</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/Captura_de_Tela_63.png" alt="4">
-                    </div>
-                    <div class="card-content">
-                        <div class="id-container">
-                            <code
-                                class="hidden-code">0;P;c;8;u;000000FF;h;0;d;1;b;1;z;1;f;0;0l;4;0v;4;0o;0;0a;1;0f;0;1b;0</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/5.png" alt="">
-                    </div>
-                    <div class="card-content">
-
-                        <div class="id-container">
-                            <code
-                                class="hidden-code">0;s;1;P;c;1;u;000000FF;h;0;f;0;0t;1;0l;2;0v;2;0o;1;0a;1;0f;0;1b;0;S;d;0</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 6 -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/6.png" alt="">
-
-                    </div>
-                    <div class="card-content">
-
-                        <div class="id-container">
-                            <code
-                                class="hidden-code">0;c;1;P;u;000000FF;o;1;d;1;z;1;f;0;s;0;m;1;0t;1;0l;1;0v;1;0o;0;0a;1;0f;0;1b;0</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/7.png" alt="7">
-                    </div>
-                    <div class="card-content">
-
-                        <div class="id-container">
-                            <code
-                                class="hidden-code">0;P;c;7;u;000000FF;o;0.4;0t;1;0l;2;0v;2;0o;1;0a;1;0m;1;0f;0;0s;0.021;1b;0</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/Captura_de_Tela_63.png" alt="4">
-                    </div>
-                    <div class="card-content">
-                        <div class="id-container">
-                            <code
-                                class="hidden-code">0;P;c;8;u;000000FF;h;0;d;1;b;1;z;1;f;0;0l;4;0v;4;0o;0;0a;1;0f;0;1b;0</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
-                        </div>
-                    </div>
-                </div>
-                <!-- Card -->
-                <div class="card">
-                    <div class="card-image">
-                        <img src="assets/img-reticula/Captura_de_Tela_63.png" alt="4">
-                    </div>
-                    <div class="card-content">
-                        <div class="id-container">
-                            <code
-                                class="hidden-code">0;P;c;8;u;000000FF;h;0;d;1;b;1;z;1;f;0;0l;4;0v;4;0o;0;0a;1;0f;0;1b;0</code>
-                            <button class="btn-copy" onclick="copiarID(this)">📋 Copiar</button>
+                    <div class="controle">
+                        <span class="controle-rotulo">Zoom</span>
+                        <div class="controle-opcoes" id="opcoes-zoom">
+                            <button type="button" class="filter-btn" data-zoom="1">Real</button>
+                            <button type="button" class="filter-btn active" data-zoom="2">2x</button>
+                            <button type="button" class="filter-btn" data-zoom="4">4x</button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Formulário: adicionar mira -->
+            <form class="card add-mira" id="form-mira" autocomplete="off">
+                <div class="add-mira-campos">
+                    <h3>Adicionar mira</h3>
+
+                    <label class="campo">
+                        <span>Nome <small>(opcional)</small></span>
+                        <input type="text" id="mira-nome" maxlength="40" placeholder="Ex.: Mira do TenZ">
+                    </label>
+
+                    <label class="campo">
+                        <span>Código da mira</span>
+                        <textarea id="mira-codigo" rows="3"
+                            placeholder="Cole o código exportado no jogo (Configurações → Mira → Exportar)"></textarea>
+                    </label>
+
+                    <p class="add-mira-erro" id="mira-erro" aria-live="polite"></p>
+
+                    <button type="submit" class="btn btn-primary" id="btn-adicionar" disabled>Adicionar mira</button>
+                </div>
+
+                <div class="card-image mira-preview">
+                    <canvas id="previa-mira"></canvas>
+                    <span class="previa-dica" id="previa-dica">A prévia aparece aqui</span>
+                </div>
+            </form>
+
+            <!-- Os cards são criados pelo miras.js -->
+            <div class="miras-grid" id="miras-grid"></div>
         </div>
     </section>
 
@@ -169,6 +93,9 @@
     </footer>
 
     <script src="script.js"></script>
+    <script src="reticula.js"></script>
+    <script src="miras-data.js"></script>
+    <script src="miras.js"></script>
 </body>
 
 </html>
