@@ -6,39 +6,38 @@
 const gridMapas = document.getElementById('mapas-grid');
 
 function criarCardMapa(mapa) {
-    const card = document.createElement('article');
-    card.className = 'cartao mapa-card';
+    const card = document.createElement('div');
+    card.className = 'card agent-map-card';
     card.innerHTML = `
-        <button type="button" class="mapa-imagem">
-            <img alt="" loading="lazy">
-            <span class="mapa-nome"></span>
+        <div class="card-image" title="Clique para ver o minimapa">
+            <img alt="">
             <span class="mapa-ver">Ver minimapa</span>
-        </button>
-        <div class="mapa-corpo">
+        </div>
+        <div class="card-content">
+            <h3></h3>
             <p class="mapa-fonte"></p>
-            <div class="agentes-lista"></div>
+            <div class="agents-list"></div>
         </div>
     `;
 
-    const botaoImagem = card.querySelector('.mapa-imagem');
-    const imagem = botaoImagem.querySelector('img');
+    const imagem = card.querySelector('.card-image img');
     imagem.src = mapa.imagem;
-    // Se a imagem não carregar, fica só o fundo com o nome (em vez de um ícone quebrado)
-    imagem.addEventListener('error', () => botaoImagem.classList.add('sem-imagem'));
+    imagem.alt = mapa.nome;
+    // Se a imagem não carregar, mostra um fundo com o nome em vez de um ícone quebrado
+    imagem.addEventListener('error', () => card.querySelector('.card-image').classList.add('sem-imagem'));
 
-    botaoImagem.setAttribute('aria-label', `Ver minimapa de ${mapa.nome}`);
-    botaoImagem.addEventListener('click', () => openMap(mapa.nome, mapa.minimapa));
-    card.querySelector('.mapa-nome').textContent = mapa.nome;
+    card.querySelector('.card-image').addEventListener('click', () => openMap(mapa.nome, mapa.minimapa));
+    card.querySelector('h3').textContent = mapa.nome.toUpperCase();
     card.querySelector('.mapa-fonte').textContent = `Base: ${mapa.fonte}`;
 
     if (mapa.selo) {
         const selo = document.createElement('span');
-        selo.className = mapa.selo === 'Novo' ? 'selo selo-cheio' : 'selo';
+        selo.className = mapa.selo === 'Novo' ? 'badge badge-custom' : 'badge badge-classic';
         selo.textContent = mapa.selo;
-        botaoImagem.appendChild(selo);
+        card.querySelector('.card-image').appendChild(selo);
     }
 
-    const lista = card.querySelector('.agentes-lista');
+    const lista = card.querySelector('.agents-list');
     mapa.agentes.forEach(({ id, pick }) => lista.appendChild(criarAgente(id, pick)));
 
     return card;
@@ -47,22 +46,20 @@ function criarCardMapa(mapa) {
 function criarAgente(id, pick) {
     const agente = AGENTES[id];
     const item = document.createElement('div');
-    item.className = 'agente';
+    item.className = 'agent';
 
     const img = document.createElement('img');
     img.src = agente.img;
-    img.alt = '';
-    img.loading = 'lazy';
+    img.alt = agente.nome;
 
     const nome = document.createElement('span');
-    nome.className = 'agente-nome';
     nome.textContent = agente.nome;
 
     item.append(img, nome);
 
     if (pick !== undefined) {
-        const porcentagem = document.createElement('span');
-        porcentagem.className = 'agente-pick';
+        const porcentagem = document.createElement('small');
+        porcentagem.className = 'agent-pick';
         porcentagem.textContent = `${pick}%`;
         item.appendChild(porcentagem);
     }
@@ -70,17 +67,16 @@ function criarAgente(id, pick) {
     return item;
 }
 
-// Linha acima do título com o patch atual
+// Cabeçalho com o patch e a lista de mapas fora da rotação
 document.getElementById('rotacao-info').textContent =
     `Patch ${ROTACAO.patch} · ${ROTACAO.temporada} · atualizado em ${ROTACAO.atualizadoEm}`;
 
-// Mapas fora da rotação
 const listaFora = document.getElementById('fora-rotacao');
 FORA_DA_ROTACAO.forEach(nome => {
-    const etiqueta = document.createElement('span');
-    etiqueta.className = 'etiqueta';
-    etiqueta.textContent = nome;
-    listaFora.appendChild(etiqueta);
+    const tag = document.createElement('span');
+    tag.className = 'mira-tag';
+    tag.textContent = nome;
+    listaFora.appendChild(tag);
 });
 
 MAPAS.forEach(mapa => gridMapas.appendChild(criarCardMapa(mapa)));

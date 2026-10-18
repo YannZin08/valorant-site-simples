@@ -4,49 +4,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miras · Valorant Hub</title>
-    <meta name="description" content="Miras do Valorant com prévia de como ficam no jogo e código para copiar.">
-    <!-- "?v=4": mude o número quando alterar o CSS/JS, assim o navegador baixa a versão nova -->
-    <link rel="stylesheet" href="style.css?v=4">
+    <title>Valorant Crosshairs - Miras e Skins</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Valorant Crosshairs</h1>
+            <p>Descubra as melhores miras para melhorar sua precisão no Valorant. Copie os IDs e customize sua
+                experiência.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" onclick="window.location.href='skins.html'">
+                    Explorar Skins
+                </button>
 
-    <!-- CABEÇALHO (igual nas 3 páginas; só muda o aria-current) -->
-    <header class="cabecalho">
-        <div class="container cabecalho-conteudo">
-            <a class="marca" href="index.html">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2.5" aria-hidden="true">
-                    <path d="M12 2v6M12 16v6M2 12h6M16 12h6" />
-                    <rect x="11" y="11" width="2" height="2" fill="currentColor" stroke="none" />
-                </svg>
-                <span>Valorant Hub</span>
-            </a>
-            <nav class="nav" aria-label="Seções do site">
-                <a class="nav-link" href="index.html" aria-current="page">Miras</a>
-                <a class="nav-link" href="agentes.html">Agentes</a>
-                <a class="nav-link" href="skins.html">Skins</a>
-            </nav>
-        </div>
-    </header>
-
-    <main>
-        <section class="pagina-topo">
-            <div class="container">
-                <p class="pagina-rotulo" id="miras-contagem">Retículas</p>
-                <h1>Miras</h1>
-                <p class="pagina-descricao">Cada mira aparece do jeito que fica no jogo. Copie o código e importe em
-                    Configurações → Mira.</p>
+                <button class="btn btn-secondary" onclick="window.location.href='agentes.html'">
+                    Melhores Agentes para cada mapa
+                </button>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <section class="container">
-            <!-- Fundo e zoom valem para todas as prévias -->
-            <div class="barra">
-                <div class="controles">
+    <!-- Miras -->
+    <section class="miras-section">
+        <div class="container">
+            <div class="miras-topo">
+                <div class="miras-titulo">
+                    <h2>Miras</h2>
+                    <span class="miras-contagem" id="miras-contagem"></span>
+                </div>
+
+                <!-- Opções de visualização (valem para todas as prévias) -->
+                <div class="miras-controles">
                     <div class="controle">
-                        <span class="rotulo">Fundo</span>
+                        <span class="controle-rotulo">Fundo</span>
                         <div class="segmentos" id="opcoes-fundo">
                             <button type="button" data-fundo="parede">Parede</button>
                             <button type="button" data-fundo="clara">Clara</button>
@@ -55,7 +48,7 @@
                         </div>
                     </div>
                     <div class="controle">
-                        <span class="rotulo">Zoom</span>
+                        <span class="controle-rotulo">Zoom</span>
                         <div class="segmentos" id="opcoes-zoom">
                             <button type="button" data-zoom="1">Real</button>
                             <button type="button" data-zoom="2">2x</button>
@@ -63,20 +56,17 @@
                         </div>
                     </div>
                 </div>
-
-                <button type="button" class="botao botao-primario" id="btn-nova-mira" aria-expanded="false"
-                    aria-controls="form-mira">+ Nova mira</button>
             </div>
 
-            <!-- Formulário (fica escondido até clicar em "+ Nova mira") -->
-            <form class="cartao nova-mira" id="form-mira" autocomplete="off" hidden>
-                <div class="mira-preview nova-mira-previa">
+            <!-- Formulário: adicionar mira -->
+            <form class="add-mira" id="form-mira" autocomplete="off">
+                <div class="mira-preview add-mira-previa">
                     <canvas id="previa-mira"></canvas>
                     <span class="previa-dica" id="previa-dica">Cole um código para ver a mira aqui</span>
                 </div>
 
-                <div class="nova-mira-campos">
-                    <h2>Nova mira</h2>
+                <div class="add-mira-campos">
+                    <h3>Nova mira</h3>
 
                     <label class="campo">
                         <span>Nome <small>(opcional)</small></span>
@@ -89,33 +79,26 @@
                             placeholder="Cole o código exportado no jogo (Configurações → Mira → Exportar)"></textarea>
                     </label>
 
-                    <p class="campo-erro" id="mira-erro" aria-live="polite"></p>
+                    <p class="add-mira-erro" id="mira-erro" aria-live="polite"></p>
 
-                    <div class="nova-mira-botoes">
-                        <button type="submit" class="botao botao-primario" id="btn-adicionar" disabled>Adicionar
-                            mira</button>
-                        <button type="button" class="botao botao-fantasma" id="btn-cancelar">Cancelar</button>
-                    </div>
+                    <button type="submit" class="add-mira-botao" id="btn-adicionar" disabled>Adicionar mira</button>
                 </div>
             </form>
 
             <!-- Os cards são criados pelo miras.js -->
-            <div class="grade" id="miras-grid"></div>
-        </section>
-    </main>
-
-    <!-- RODAPÉ -->
-    <footer class="rodape">
-        <div class="container rodape-conteudo">
-            <span><strong>Valorant Hub</strong> · feito por Yann</span>
-            <span>Site de fã. Não afiliado à Riot Games.</span>
+            <div class="miras-grid mira-lista" id="miras-grid"></div>
         </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>© 2026 Valorant Crosshairs by Yann. Não afiliado com Riot Games.</p>
     </footer>
 
-    <script src="script.js?v=4"></script>
-    <script src="reticula.js?v=4"></script>
-    <script src="miras-data.js?v=4"></script>
-    <script src="miras.js?v=4"></script>
+    <script src="script.js"></script>
+    <script src="reticula.js"></script>
+    <script src="miras-data.js"></script>
+    <script src="miras.js"></script>
 </body>
 
 </html>

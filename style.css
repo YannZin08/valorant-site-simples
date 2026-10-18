@@ -1,24 +1,717 @@
-/* =========================================================
-   VALORANT HUB — estilos do site
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-   1. Fontes
-   2. Variáveis (cores, fontes, medidas)
-   3. Base
-   4. Layout: cabeçalho, topo da página, rodapé
-   5. Componentes: botões, segmentos, cartões, selos, modal
-   6. Página Miras
-   7. Página Agentes
-   8. Página Skins
-   9. Telas menores e acessibilidade
-   ========================================================= */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 50%, #0f172a 100%);
+    color: #e0e7ff;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+
+.hero {
+    position: relative;
+    overflow: hidden;
+    padding: 80px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(26, 31, 58, 0.8) 50%, rgba(15, 23, 42, 0.8) 100%);
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 25%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(34, 211, 238, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 25%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    filter: blur(60px);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 4rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+    background: linear-gradient(90deg, #22d3ee, #a855f7, #ec4899);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 30px rgba(34, 211, 238, 0.3);
+    animation: fadeInDown 0.8s ease-out;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    color: #cbd5e1;
+    margin-bottom: 40px;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    animation: fadeInUp 0.8s ease-out 0.4s both;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+    color: #0f172a;
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(34, 211, 238, 0.6);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: #a855f7;
+    border: 2px solid #a855f7;
+}
+
+.btn-secondary:hover {
+    background: rgba(168, 85, 247, 0.1);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
+}
+
+.btn-usar {
+    width: 100%;
+    background: linear-gradient(135deg, #a855f7, #ec4899);
+    color: white;
+    margin-top: 15px;
+}
+
+.btn-usar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+}
+
+.btn-copy {
+    width: 100%;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    color: #ffffff;
+
+    border: 1px solid rgba(168, 85, 247, 0.6);
+    border-radius: 8px;
+
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.25);
+}
+
+.btn-copy:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.6);
+}
+
+.btn-copy.copied {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    border-color: #22c55e;
+    box-shadow: 0 0 25px rgba(34, 197, 94, 0.6);
+}
 
 
-/* =========================================================
-   1. FONTES
-   Big Shoulders: condensada e alta, no estilo do Valorant.
-   Os arquivos ficam em assets/fonts (não depende de internet).
-   ========================================================= */
+/* ============================================
+   CONTAINER & SECTION
+   ============================================ */
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+
+.miras-section .container {
+    padding-left: 40px;
+    padding-right: 40px;
+}
+
+.miras-section h2 {
+    font-size: 2.5rem;
+    margin-bottom: 50px;
+    color: #e0e7ff;
+    font-weight: 700;
+}
+
+/* ============================================
+   GRID DE MIRAS
+   ============================================ */
+
+.miras-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 🔥 3 por linha */
+    gap: 40px; /* espaço entre mapas */
+    margin-top: 40px;
+}
+
+/* ============================================
+   CARDS
+   ============================================ */
+
+.card {
+    background: rgba(30, 41, 59, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(148, 163, 184, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(34, 211, 238, 0.1) 0%, rgba(168, 85, 247, 0.1) 50%, rgba(236, 72, 153, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.card:hover {
+    border-color: rgba(34, 211, 238, 0.5);
+    box-shadow: 0 0 30px rgba(34, 211, 238, 0.2);
+    transform: translateY(-5px);
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+.card-image {
+    position: relative;
+    height: 200px;
+    overflow: hidden;
+    background: #0f172a;
+}
+
+.card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.card:hover .card-image img {
+    transform: scale(1.05);
+}
+.skin-card .card-image {
+    height: 220px; /* altura controlada */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.skin-card .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* NÃO CORTA */
+}
+
+.badge {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-classic {
+    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+    color: #0f172a;
+}
+
+.badge-competitive {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    color: white;
+}
+
+.badge-modern {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.badge-custom {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+}
+
+.card-content {
+    padding: 25px;
+    position: relative;
+    z-index: 1;
+}
+
+.card-content h3 {
+    font-size: 1.3rem;
+    margin-bottom: 10px;
+    color: #f1f5f9;
+    font-weight: 700;
+}
+
+.card-content p {
+    color: #cbd5e1;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+}
+
+/* ============================================
+   ID CONTAINER
+   ============================================ */
+
+.id-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.5);
+    padding: 12px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(34, 211, 238, 0.2);
+}
+
+/* ESCONDE O CÓDIGO */
+.id-container .hidden-code {
+    display: none;
+}
+
+.id-container code {
+    flex: 1;
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: #22d3ee;
+    word-break: break-all;
+    font-weight: 600;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+
+.footer {
+    background: rgba(15, 23, 42, 0.8);
+    border-top: 1px solid rgba(148, 163, 184, 0.1);
+    padding: 30px 20px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   ANIMAÇÕES
+   ============================================ */
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   RESPONSIVO
+   ============================================ */
+
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .miras-section h2 {
+        font-size: 2rem;
+    }
+
+    .miras-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .id-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+
+    .btn-copy {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero {
+        padding: 50px 15px;
+    }
+
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .miras-section {
+        padding: 40px 15px;
+    }
+
+    .miras-section h2 {
+        font-size: 1.5rem;
+    }
+
+    .card-content {
+        padding: 15px;
+    }
+
+    .card-content h3 {
+        font-size: 1.1rem;
+    }
+}
+/* =========================
+   FILTROS
+   ========================= */
+
+.filters {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 10px 22px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(168, 85, 247, 0.4);
+    color: #a855f7;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.filter-btn:hover {
+    background: rgba(168, 85, 247, 0.15);
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
+}
+
+.filter-btn.active {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    color: #fff;
+    box-shadow: 0 0 25px rgba(168, 85, 247, 0.6);
+}
+
+/* =========================
+   BADGES SKINS
+   ========================= */
+
+.badge-premium {
+    background: linear-gradient(135deg, #a855f7, #7c3aed);
+    color: #fff;
+}
+
+.badge-deluxe {
+    background: linear-gradient(135deg, #22d3ee, #0ea5e9);
+    color: #0f172a;
+}
+
+.badge-exclusive {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: #0f172a;
+}
+/* =========================
+   MAPAS & AGENTES
+   ========================= */
+
+.agent-map-card .card-image {
+    height: 220px;
+    background: #0f172a;
+}
+
+.agent-map-card .card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.agents-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px; /* antes estava 12px */
+}
+
+.agent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.agent img {
+    width: 96px;           /* MAIOR */
+    height: 96px;
+    object-fit: contain;   /* não estica */
+    border-radius: 0;      /* remove formato de card */
+    background: none;      /* remove fundo */
+    box-shadow: none;      /* remove glow quadrado */
+    gap: 4px;
+}
+
+.agent img:hover {
+    transform: scale(1.12);
+    box-shadow: 0 0 30px rgba(168, 85, 247, 0.85);
+}
+
+.agent span {
+    font-size: 0.95rem;
+    color: #e5e7eb;
+    text-align: center;
+    line-height: 1.2;
+    font-weight: 500;
+}
+.map-section {
+    margin-bottom: 90px;
+    padding-bottom: 60px;
+    position: relative;
+}
+
+.map-section::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(168, 85, 247, 0.8),
+        transparent
+    );
+}
+
+.map-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.map-image {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+    border-radius: 16px;
+    margin-bottom: 18px;
+}
+
+.map-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 22px;
+    color: #e5e7eb;
+}
+@media (max-width: 1024px) {
+    .miras-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .miras-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .miras-section .container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+.agent-map-card:hover {
+    transform: translateY(-6px);
+    transition: transform 0.3s ease;
+}
+@media (min-width: 1024px) {
+    body {
+        padding-left: 24px;
+        padding-right: 24px;
+    }
+}
+@media (max-width: 768px) {
+
+    .agents-list {
+        grid-template-columns: repeat(3, 1fr); /* antes 4 */
+        gap: 6px;
+    }
+
+    .agent img {
+        width: 72px;     /* menor no celular */
+        height: 72px;
+    }
+}
+@media (max-width: 420px) {
+
+    .agents-list {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .agent img {
+        width: 64px;
+        height: 64px;
+    }
+}
+.map-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 10, 25, 0.85);
+    backdrop-filter: blur(6px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.map-modal.active {
+    display: flex;
+}
+
+.map-modal-content {
+    background: #0e1430;
+    border-radius: 18px;
+    padding: 20px;
+    max-width: 900px;
+    width: 95%;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(120, 90, 255, 0.4);
+}
+
+.map-modal-content h2 {
+    margin-bottom: 14px;
+    font-size: 1.8rem;
+}
+
+.map-modal-content img {
+    width: 100%;
+    max-height: 70vh;
+    object-fit: contain;
+    border-radius: 12px;
+}
+
+.close-modal {
+    position: absolute;
+    top: 18px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #fff;
+    cursor: pointer;
+}
+
+.map-hint {
+    margin-top: 10px;
+    opacity: 0.6;
+    font-size: 0.85rem;
+}
+/* ============================================
+   MIRAS — visual da seção de retículas
+   ============================================ */
+
+/* Fonte do título: condensada e alta, no estilo do Valorant.
+   Os arquivos ficam em assets/fonts (não depende de internet). */
 @font-face {
     font-family: 'Big Shoulders Display';
     src: url('assets/fonts/big-shoulders-display-latin-700-normal.woff2') format('woff2');
@@ -35,356 +728,59 @@
     font-display: swap;
 }
 
-
-/* =========================================================
-   2. VARIÁVEIS
-   Para mudar o visual do site inteiro, mexa aqui.
-   ========================================================= */
-
 :root {
-    --cor-fundo: #0a0f1d;
-    --cor-painel: #0f1729;
-    --cor-painel-2: #141e35;
-    --cor-campo: #0a1222;
-    --cor-linha: rgba(148, 163, 184, 0.14);
-    --cor-linha-forte: rgba(148, 163, 184, 0.3);
-    --cor-texto: #e6edf7;
-    --cor-suave: #8b9ab3;
-    --cor-destaque: #22d3ee;
-    --cor-destaque-fundo: rgba(34, 211, 238, 0.12);
-    --cor-sobre-destaque: #06202a;
-    --cor-sucesso: #22c55e;
-    --cor-erro: #f87171;
-
+    --mira-painel: #0d1526;
+    --mira-painel-claro: #121d34;
+    --mira-linha: rgba(148, 163, 184, 0.14);
+    --mira-texto: #e6edf7;
+    --mira-suave: #8b9ab3;
+    --mira-ciano: #22d3ee;
+    --mira-verde: #22c55e;
+    --mira-vermelho: #f87171;
     --fonte-display: 'Big Shoulders Display', 'Arial Narrow', sans-serif;
-    --fonte-texto: 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;
     --fonte-mono: ui-monospace, 'Cascadia Code', Consolas, monospace;
-
-    --raio: 14px;
-    --raio-pequeno: 8px;
-    --largura-max: 1200px;
-    --altura-cabecalho: 64px;
 }
 
-
-/* =========================================================
-   3. BASE
-   ========================================================= */
-
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+.miras-section {
+    padding-top: 24px;
+    padding-bottom: 96px;
 }
 
-html {
-    scroll-behavior: smooth;
-    scroll-padding-top: calc(var(--altura-cabecalho) + 16px);
-}
+/* ---------- Cabeçalho: título + controles ---------- */
 
-body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background:
-        radial-gradient(900px 420px at 15% -120px, rgba(34, 211, 238, 0.09), transparent 70%),
-        var(--cor-fundo);
-    color: var(--cor-texto);
-    font-family: var(--fonte-texto);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-}
-
-main {
-    flex: 1;
-}
-
-img {
-    display: block;
-    max-width: 100%;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-button,
-input,
-textarea {
-    font: inherit;
-    color: inherit;
-}
-
-/* o atributo hidden sempre esconde, mesmo com display definido no CSS */
-[hidden] {
-    display: none !important;
-}
-
-.container {
-    width: 100%;
-    max-width: var(--largura-max);
-    margin: 0 auto;
-    padding: 0 24px;
-}
-
-
-/* =========================================================
-   4. LAYOUT
-   ========================================================= */
-
-/* ---------- Cabeçalho (igual em todas as páginas) ---------- */
-
-.cabecalho {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    background: rgba(10, 15, 29, 0.85);
-    border-bottom: 1px solid var(--cor-linha);
-    backdrop-filter: blur(12px);
-}
-
-.cabecalho-conteudo {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 24px;
-    height: var(--altura-cabecalho);
-}
-
-.marca {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--fonte-display);
-    font-size: 1.5rem;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.marca svg {
-    flex-shrink: 0;
-    color: var(--cor-destaque);
-}
-
-.nav {
-    display: flex;
-    gap: 4px;
-}
-
-.nav-link {
-    position: relative;
-    padding: 8px 14px;
-    border-radius: var(--raio-pequeno);
-    color: var(--cor-suave);
-    font-size: 0.95rem;
-    font-weight: 600;
-    transition: color 0.2s ease, background 0.2s ease;
-}
-
-.nav-link:hover {
-    background: rgba(148, 163, 184, 0.08);
-    color: var(--cor-texto);
-}
-
-.nav-link[aria-current="page"] {
-    color: var(--cor-texto);
-}
-
-/* risquinho ciano na página atual, encostado na borda do cabeçalho */
-.nav-link[aria-current="page"]::after {
-    content: '';
-    position: absolute;
-    left: 14px;
-    right: 14px;
-    bottom: -13px;
-    height: 2px;
-    border-radius: 2px;
-    background: var(--cor-destaque);
-}
-
-/* ---------- Topo de cada página ---------- */
-
-.pagina-topo {
-    padding: 56px 0 32px;
-}
-
-.pagina-rotulo {
-    margin-bottom: 10px;
-    font-family: var(--fonte-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--cor-destaque);
-}
-
-.pagina-topo h1 {
-    font-family: var(--fonte-display);
-    font-size: clamp(3rem, 8vw, 5rem);
-    font-weight: 800;
-    line-height: 0.9;
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
-}
-
-.pagina-descricao {
-    max-width: 640px;
-    margin-top: 14px;
-    font-size: 1.05rem;
-    color: var(--cor-suave);
-}
-
-/* ---------- Rodapé ---------- */
-
-.rodape {
-    margin-top: 96px;
-    border-top: 1px solid var(--cor-linha);
-}
-
-.rodape-conteudo {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 8px 24px;
-    padding-top: 28px;
-    padding-bottom: 28px;
-    font-size: 0.88rem;
-    color: var(--cor-suave);
-}
-
-.rodape strong {
-    font-family: var(--fonte-display);
-    font-size: 1.05rem;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--cor-texto);
-}
-
-
-/* =========================================================
-   5. COMPONENTES
-   ========================================================= */
-
-/* ---------- Botões ---------- */
-
-.botao {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 18px;
-    border: 1px solid transparent;
-    border-radius: 10px;
-    font-size: 0.92rem;
-    font-weight: 700;
-    white-space: nowrap;
-    cursor: pointer;
-    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.botao-primario {
-    background: var(--cor-destaque);
-    color: var(--cor-sobre-destaque);
-}
-
-.botao-primario:hover:not(:disabled) {
-    box-shadow: 0 0 24px rgba(34, 211, 238, 0.4);
-}
-
-.botao-secundario {
-    background: var(--cor-destaque-fundo);
-    border-color: rgba(34, 211, 238, 0.45);
-    color: var(--cor-destaque);
-}
-
-.botao-secundario:hover {
-    background: var(--cor-destaque);
-    color: var(--cor-sobre-destaque);
-}
-
-.botao-fantasma {
-    background: transparent;
-    border-color: var(--cor-linha);
-    color: var(--cor-suave);
-}
-
-.botao-fantasma:hover {
-    border-color: var(--cor-linha-forte);
-    color: var(--cor-texto);
-}
-
-.botao-pequeno {
-    padding: 7px 12px;
-    border-radius: var(--raio-pequeno);
-    font-size: 0.85rem;
-}
-
-.botao-icone {
-    padding: 8px;
-}
-
-.botao:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-}
-
-/* estado depois de copiar (a classe é colocada pelo script.js) */
-.botao.copied {
-    background: var(--cor-sucesso);
-    border-color: var(--cor-sucesso);
-    color: #052e16;
-}
-
-/* ---------- Segmentos (botões grudados, tipo menu do jogo) ---------- */
-
-.segmentos {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: 2px;
-    padding: 3px;
-    background: var(--cor-painel);
-    border: 1px solid var(--cor-linha);
-    border-radius: 10px;
-}
-
-.segmentos button {
-    padding: 7px 14px;
-    border: 0;
-    border-radius: 7px;
-    background: transparent;
-    color: var(--cor-suave);
-    font-size: 0.88rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 0.2s ease, background 0.2s ease;
-}
-
-.segmentos button:hover {
-    color: var(--cor-texto);
-}
-
-.segmentos button.active {
-    background: var(--cor-destaque-fundo);
-    color: var(--cor-destaque);
-}
-
-/* ---------- Barra de ferramentas (acima das grades) ---------- */
-
-.barra {
+.miras-topo {
     display: flex;
     align-items: flex-end;
     justify-content: space-between;
     flex-wrap: wrap;
-    gap: 20px;
-    margin-bottom: 24px;
+    gap: 24px;
+    margin-bottom: 28px;
 }
 
-.controles {
+.miras-titulo {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+}
+
+.miras-titulo h2 {
+    margin: 0;
+    font-family: var(--fonte-display);
+    font-size: clamp(2.75rem, 7vw, 4rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--mira-texto);
+}
+
+.miras-contagem {
+    font-family: var(--fonte-mono);
+    font-size: 0.85rem;
+    color: var(--mira-suave);
+}
+
+.miras-controles {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -396,130 +792,46 @@ textarea {
     gap: 8px;
 }
 
-.rotulo {
+/* também usado no "Fora da rotação" da página de agentes */
+.controle-rotulo {
     font-family: var(--fonte-mono);
     font-size: 0.72rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--cor-suave);
+    color: var(--mira-suave);
 }
 
-/* ---------- Grades ---------- */
-
-.grade {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
+/* Botões grudados, tipo as opções do menu do jogo */
+.segmentos {
+    display: inline-flex;
+    gap: 2px;
+    padding: 3px;
+    background: var(--mira-painel);
+    border: 1px solid var(--mira-linha);
+    border-radius: 10px;
 }
 
-.grade-4 {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
-/* ---------- Cartão (base dos cards de mira, mapa e skin) ---------- */
-
-.cartao {
-    background: var(--cor-painel);
-    border: 1px solid var(--cor-linha);
-    border-radius: var(--raio);
-    transition: border-color 0.25s ease, background 0.25s ease;
-}
-
-.cartao:hover {
-    background: var(--cor-painel-2);
-    border-color: rgba(34, 211, 238, 0.35);
-}
-
-/* ---------- Selos e etiquetas ---------- */
-
-.selo {
-    flex-shrink: 0;
-    padding: 2px 7px;
-    border: 1px solid rgba(34, 211, 238, 0.45);
-    border-radius: 4px;
-    font-family: var(--fonte-mono);
-    font-size: 0.66rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--cor-destaque);
-}
-
-.selo-cheio {
-    background: var(--cor-destaque);
-    border-color: var(--cor-destaque);
-    color: var(--cor-sobre-destaque);
-}
-
-.etiquetas {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.etiqueta {
-    padding: 4px 12px;
-    background: var(--cor-painel);
-    border: 1px solid var(--cor-linha);
-    border-radius: 999px;
+.segmentos button {
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 7px;
+    background: transparent;
+    color: var(--mira-suave);
+    font-family: inherit;
     font-size: 0.85rem;
-    color: var(--cor-suave);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease, background 0.2s ease;
 }
 
-/* ---------- Modal (minimapa) ---------- */
-
-.modal {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-    background: rgba(5, 9, 20, 0.85);
-    backdrop-filter: blur(6px);
+.segmentos button:hover {
+    color: var(--mira-texto);
 }
 
-.modal.active {
-    display: flex;
+.segmentos button.active {
+    background: rgba(34, 211, 238, 0.14);
+    color: var(--mira-ciano);
 }
-
-.modal-conteudo {
-    position: relative;
-    width: 100%;
-    max-width: 760px;
-    padding: 20px;
-    background: var(--cor-painel);
-    border: 1px solid var(--cor-linha);
-    border-radius: var(--raio);
-}
-
-.modal-conteudo h2 {
-    margin-bottom: 14px;
-    font-family: var(--fonte-display);
-    font-size: 2rem;
-    font-weight: 800;
-    line-height: 1;
-    text-transform: uppercase;
-}
-
-.modal-conteudo img {
-    width: 100%;
-    max-height: 70vh;
-    object-fit: contain;
-    border-radius: var(--raio-pequeno);
-}
-
-.modal-fechar {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-}
-
-
-/* =========================================================
-   6. PÁGINA MIRAS
-   ========================================================= */
 
 /* ---------- Prévia com "visor" (cantoneiras nos 4 cantos) ---------- */
 
@@ -527,7 +839,7 @@ textarea {
     position: relative;
     overflow: hidden;
     background: #0b0f1a;
-    border-radius: var(--raio-pequeno);
+    border-radius: 8px;
 }
 
 .mira-preview canvas {
@@ -562,23 +874,37 @@ textarea {
 /* Ao passar o mouse, o visor "trava" na mira */
 .mira-card:hover .mira-preview::after,
 .mira-card:focus-within .mira-preview::after {
-    --cor: var(--cor-destaque);
+    --cor: var(--mira-ciano);
     inset: 22% 30%;
 }
 
-/* No formulário, trava quando o código colado é válido */
+/* No formulário, o visor trava quando o código colado é válido */
 .mira-preview.travada::after {
-    --cor: var(--cor-destaque);
+    --cor: var(--mira-ciano);
     inset: 28% 36%;
 }
 
-/* ---------- Card de mira ---------- */
+/* ---------- Cards ---------- */
+
+.mira-lista {
+    gap: 22px;
+    margin-top: 0;
+}
 
 .mira-card {
     display: flex;
     flex-direction: column;
     gap: 12px;
     padding: 10px;
+    background: var(--mira-painel);
+    border: 1px solid var(--mira-linha);
+    border-radius: 14px;
+    transition: border-color 0.25s ease, background 0.25s ease;
+}
+
+.mira-card:hover {
+    background: var(--mira-painel-claro);
+    border-color: rgba(34, 211, 238, 0.35);
 }
 
 .mira-card .mira-preview {
@@ -610,17 +936,71 @@ textarea {
     text-transform: uppercase;
     white-space: nowrap;
     text-overflow: ellipsis;
+    color: var(--mira-texto);
+}
+
+.mira-selo {
+    flex-shrink: 0;
+    padding: 2px 6px;
+    border: 1px solid rgba(34, 211, 238, 0.4);
+    border-radius: 4px;
+    font-family: var(--fonte-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mira-ciano);
 }
 
 .mira-acoes {
     display: flex;
-    flex-shrink: 0;
     align-items: center;
     gap: 4px;
+    flex-shrink: 0;
 }
 
-.codigo-oculto {
+.mira-acoes .hidden-code {
     display: none;
+}
+
+.mira-copiar,
+.mira-excluir {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.mira-copiar {
+    background: rgba(34, 211, 238, 0.1);
+    border: 1px solid rgba(34, 211, 238, 0.45);
+    color: var(--mira-ciano);
+}
+
+.mira-copiar:hover {
+    background: var(--mira-ciano);
+    color: #06202a;
+}
+
+.mira-copiar.copied {
+    background: var(--mira-verde);
+    border-color: var(--mira-verde);
+    color: #052e16;
+}
+
+.mira-excluir {
+    display: inline-flex;
+    padding: 8px;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--mira-suave);
+}
+
+.mira-excluir:hover {
+    border-color: rgba(248, 113, 113, 0.4);
+    color: var(--mira-vermelho);
 }
 
 .mira-nova {
@@ -629,7 +1009,7 @@ textarea {
 
 @keyframes miraNova {
     from {
-        box-shadow: 0 0 0 2px var(--cor-destaque), 0 0 40px rgba(34, 211, 238, 0.5);
+        box-shadow: 0 0 0 2px var(--mira-ciano), 0 0 40px rgba(34, 211, 238, 0.5);
     }
 
     to {
@@ -639,19 +1019,17 @@ textarea {
 
 /* ---------- Formulário "Nova mira" ---------- */
 
-.nova-mira {
+.add-mira {
     display: grid;
     grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    margin-bottom: 28px;
+    margin-bottom: 40px;
     overflow: hidden;
+    background: var(--mira-painel);
+    border: 1px solid var(--mira-linha);
+    border-radius: 16px;
 }
 
-.nova-mira:hover {
-    background: var(--cor-painel);
-    border-color: var(--cor-linha);
-}
-
-.nova-mira-previa {
+.add-mira-previa {
     min-height: 300px;
     border-radius: 0;
 }
@@ -666,25 +1044,30 @@ textarea {
     font-family: var(--fonte-mono);
     font-size: 0.85rem;
     text-align: center;
-    color: rgba(255, 255, 255, 0.8);
+    color: rgba(255, 255, 255, 0.75);
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
     pointer-events: none;
 }
 
-.nova-mira-campos {
+.previa-dica[hidden] {
+    display: none;
+}
+
+.add-mira-campos {
     display: flex;
     flex-direction: column;
     gap: 14px;
     padding: 28px;
 }
 
-.nova-mira-campos h2 {
+.add-mira-campos h3 {
     font-family: var(--fonte-display);
     font-size: 2rem;
     font-weight: 700;
     line-height: 1;
     letter-spacing: 0.03em;
     text-transform: uppercase;
+    color: var(--mira-texto);
 }
 
 .campo {
@@ -693,7 +1076,7 @@ textarea {
     gap: 6px;
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--cor-suave);
+    color: var(--mira-suave);
 }
 
 .campo small {
@@ -705,10 +1088,11 @@ textarea {
 .campo textarea {
     width: 100%;
     padding: 10px 12px;
-    background: var(--cor-campo);
-    border: 1px solid var(--cor-linha);
-    border-radius: var(--raio-pequeno);
-    color: var(--cor-texto);
+    background: #091020;
+    border: 1px solid var(--mira-linha);
+    border-radius: 8px;
+    color: var(--mira-texto);
+    font: inherit;
     font-weight: 400;
     resize: vertical;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -722,338 +1106,194 @@ textarea {
 .campo input:focus,
 .campo textarea:focus {
     outline: none;
-    border-color: var(--cor-destaque);
+    border-color: var(--mira-ciano);
     box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
 }
 
-.campo-erro {
+.add-mira-erro {
     min-height: 1.2em;
     font-size: 0.85rem;
-    color: var(--cor-erro);
+    color: var(--mira-vermelho);
 }
 
-.nova-mira-botoes {
-    display: flex;
-    gap: 10px;
+.add-mira-botao {
+    align-self: flex-start;
     margin-top: auto;
-}
-
-
-/* =========================================================
-   7. PÁGINA AGENTES
-   ========================================================= */
-
-.mapa-card {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-}
-
-/* a imagem é um botão: abre o minimapa (funciona com teclado também) */
-.mapa-imagem {
-    position: relative;
-    display: block;
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    overflow: hidden;
-    padding: 0;
-    background: linear-gradient(135deg, #1e293b, #312e81);
+    padding: 12px 22px;
     border: 0;
-    border-radius: var(--raio-pequeno);
-    cursor: pointer;
-}
-
-.mapa-imagem img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s ease;
-}
-
-.mapa-card:hover .mapa-imagem img {
-    transform: scale(1.04);
-}
-
-/* imagem que não carregou: fica só o fundo com o nome */
-.mapa-imagem.sem-imagem img {
-    visibility: hidden;
-}
-
-.mapa-imagem::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(5, 9, 20, 0.85) 0%, transparent 55%);
-    pointer-events: none;
-}
-
-.mapa-nome {
-    position: absolute;
-    left: 14px;
-    bottom: 10px;
-    z-index: 1;
-    font-family: var(--fonte-display);
-    font-size: 2.1rem;
+    border-radius: 10px;
+    background: var(--mira-ciano);
+    color: #06202a;
+    font-family: inherit;
+    font-size: 0.95rem;
     font-weight: 800;
-    line-height: 1;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-    color: #fff;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
-.mapa-imagem .selo {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 1;
+.add-mira-botao:hover:not(:disabled) {
+    box-shadow: 0 0 24px rgba(34, 211, 238, 0.45);
 }
 
-/* fundo escuro para o selo ser legível em cima de imagens claras */
-.mapa-imagem .selo:not(.selo-cheio) {
-    background: rgba(5, 9, 20, 0.8);
+.add-mira-botao:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+/* ---------- Acessibilidade ---------- */
+
+.segmentos button:focus-visible,
+.mira-copiar:focus-visible,
+.mira-excluir:focus-visible,
+.add-mira-botao:focus-visible {
+    outline: 2px solid var(--mira-ciano);
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mira-preview::after {
+        transition: none;
+    }
+
+    .mira-nova {
+        animation: none;
+    }
+}
+
+/* ---------- Celular ---------- */
+
+@media (max-width: 768px) {
+    .add-mira {
+        grid-template-columns: 1fr;
+    }
+
+    .add-mira-previa {
+        min-height: 220px;
+    }
+
+    .add-mira-botao {
+        align-self: stretch;
+    }
+}
+
+/* Etiquetas pequenas (usadas no "Fora da rotação" da página de agentes) */
+.mira-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.mira-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(148, 163, 184, 0.2);
+    font-size: 0.78rem;
+    color: #cbd5e1;
+}
+
+/* ============================================
+   AGENTES — página gerada pelo agentes.js
+   ============================================ */
+
+.mapas-topo {
+    margin-bottom: 30px;
+}
+
+.mapas-topo h2 {
+    margin-bottom: 6px;
+}
+
+.rotacao-info {
+    font-weight: 600;
+    color: #22d3ee;
+}
+
+.rotacao-legenda {
+    margin-top: 4px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.agent-map-card .card-image {
+    cursor: pointer;
 }
 
 .mapa-ver {
     position: absolute;
-    right: 12px;
-    bottom: 14px;
-    z-index: 1;
-    font-family: var(--fonte-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.85);
+    left: 12px;
+    bottom: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.75);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #e0e7ff;
     opacity: 0;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.3s ease;
 }
 
-.mapa-card:hover .mapa-ver,
-.mapa-imagem:focus-visible .mapa-ver {
+.agent-map-card:hover .mapa-ver {
     opacity: 1;
 }
 
-.mapa-corpo {
-    padding: 14px 6px 6px;
+/* Quando a imagem do mapa não carrega */
+.card-image.sem-imagem {
+    background: linear-gradient(135deg, #1e293b, #312e81);
 }
 
-.mapa-fonte {
-    margin-bottom: 16px;
+.card-image.sem-imagem img {
+    visibility: hidden;
+}
+
+.card-content .mapa-fonte {
+    margin: -4px 0 18px;
     font-size: 0.8rem;
-    color: var(--cor-suave);
+    color: #94a3b8;
 }
 
-.agentes-lista {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px 8px;
-}
-
-.agente {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
-    text-align: center;
-}
-
-.agente img {
-    width: 100%;
-    max-width: 60px;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    margin-bottom: 6px;
-    background: var(--cor-campo);
-    border-radius: var(--raio-pequeno);
-}
-
-.agente-nome {
-    max-width: 100%;
-    overflow: hidden;
-    font-size: 0.8rem;
-    font-weight: 600;
-    line-height: 1.3;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.agente-pick {
-    font-family: var(--fonte-mono);
-    font-size: 0.72rem;
-    color: var(--cor-destaque);
+.agent-pick {
+    margin-top: -10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #22d3ee;
 }
 
 .fora-rotacao {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 48px;
-}
-
-
-/* =========================================================
-   8. PÁGINA SKINS
-   ========================================================= */
-
-.skin-card {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-}
-
-.skin-imagem {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 16 / 10;
-    padding: 18px;
-    overflow: hidden;
-    background: radial-gradient(circle at 50% 60%, #1c2a4a 0%, #0b1222 75%);
-    border-radius: var(--raio-pequeno);
-}
-
-.skin-imagem img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transition: transform 0.4s ease;
-}
-
-.skin-card:hover .skin-imagem img {
-    transform: scale(1.06);
-}
-
-.skin-corpo {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: 12px;
-    padding: 14px 6px 4px;
-}
-
-.skin-nome {
-    font-family: var(--fonte-display);
-    font-size: 1.4rem;
-    font-weight: 700;
-    line-height: 1.05;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-}
-
-.skin-rodape {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     gap: 10px;
-    margin-top: auto;
+    margin-top: 50px;
 }
 
-.skin-preco {
-    font-family: var(--fonte-mono);
-    font-size: 0.85rem;
-    color: var(--cor-suave);
+.map-modal-content {
+    position: relative;
 }
 
-.skin-preco strong {
-    color: var(--cor-texto);
+/* 4 agentes por linha cabendo no card (antes a imagem fixa de 96px estourava) */
+.agent-map-card .agents-list {
+    gap: 12px 6px;
 }
 
-
-/* =========================================================
-   9. TELAS MENORES E ACESSIBILIDADE
-   ========================================================= */
-
-@media (max-width: 1024px) {
-    .grade {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .grade-4 {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
+.agent-map-card .agent {
+    min-width: 0;
+    gap: 6px;
 }
 
-@media (max-width: 768px) {
-    .nova-mira {
-        grid-template-columns: 1fr;
-    }
-
-    .nova-mira-previa {
-        min-height: 220px;
-    }
-
-    .grade-4 {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .pagina-topo {
-        padding: 40px 0 24px;
-    }
+.agent-map-card .agent img {
+    width: 100%;
+    max-width: 64px;
+    height: auto;
+    aspect-ratio: 1 / 1;
 }
 
-@media (max-width: 640px) {
-    .container {
-        padding: 0 16px;
-    }
-
-    .grade {
-        grid-template-columns: 1fr;
-    }
-
-    .barra .botao-primario {
-        width: 100%;
-    }
+.agent-map-card .agent span {
+    font-size: 0.82rem;
+    overflow-wrap: anywhere;
 }
 
-@media (max-width: 560px) {
-    .cabecalho-conteudo {
-        gap: 12px;
-    }
-
-    .marca {
-        gap: 8px;
-        font-size: 1.2rem;
-    }
-
-    .nav {
-        gap: 0;
-    }
-
-    .nav-link {
-        padding: 8px 8px;
-        font-size: 0.9rem;
-    }
-
-    .nav-link[aria-current="page"]::after {
-        left: 8px;
-        right: 8px;
-    }
-
-    .segmentos button {
-        padding: 7px 10px;
-        font-size: 0.85rem;
-    }
-
-    .grade-4 {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* contorno visível ao navegar com Tab */
-a:focus-visible,
-button:focus-visible {
-    outline: 2px solid var(--cor-destaque);
-    outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    html {
-        scroll-behavior: auto;
-    }
-
-    *,
-    *::before,
-    *::after {
-        transition: none !important;
-        animation: none !important;
-    }
+.agent-map-card .agent-pick {
+    margin-top: -6px;
 }
