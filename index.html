@@ -31,34 +31,42 @@
     <section class="miras-section">
         <div class="container">
             <div class="miras-topo">
-                <h2>Miras Disponíveis</h2>
+                <div class="miras-titulo">
+                    <h2>Miras</h2>
+                    <span class="miras-contagem" id="miras-contagem"></span>
+                </div>
 
                 <!-- Opções de visualização (valem para todas as prévias) -->
                 <div class="miras-controles">
                     <div class="controle">
                         <span class="controle-rotulo">Fundo</span>
-                        <div class="controle-opcoes" id="opcoes-fundo">
-                            <button type="button" class="filter-btn active" data-fundo="parede">Parede</button>
-                            <button type="button" class="filter-btn" data-fundo="clara">Clara</button>
-                            <button type="button" class="filter-btn" data-fundo="escura">Escura</button>
-                            <button type="button" class="filter-btn" data-fundo="mapa">Mapa</button>
+                        <div class="segmentos" id="opcoes-fundo">
+                            <button type="button" data-fundo="parede">Parede</button>
+                            <button type="button" data-fundo="clara">Clara</button>
+                            <button type="button" data-fundo="escura">Escura</button>
+                            <button type="button" data-fundo="mapa">Mapa</button>
                         </div>
                     </div>
                     <div class="controle">
                         <span class="controle-rotulo">Zoom</span>
-                        <div class="controle-opcoes" id="opcoes-zoom">
-                            <button type="button" class="filter-btn" data-zoom="1">Real</button>
-                            <button type="button" class="filter-btn active" data-zoom="2">2x</button>
-                            <button type="button" class="filter-btn" data-zoom="4">4x</button>
+                        <div class="segmentos" id="opcoes-zoom">
+                            <button type="button" data-zoom="1">Real</button>
+                            <button type="button" data-zoom="2">2x</button>
+                            <button type="button" data-zoom="4">4x</button>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Formulário: adicionar mira -->
-            <form class="card add-mira" id="form-mira" autocomplete="off">
+            <form class="add-mira" id="form-mira" autocomplete="off">
+                <div class="mira-preview add-mira-previa">
+                    <canvas id="previa-mira"></canvas>
+                    <span class="previa-dica" id="previa-dica">Cole um código para ver a mira aqui</span>
+                </div>
+
                 <div class="add-mira-campos">
-                    <h3>Adicionar mira</h3>
+                    <h3>Nova mira</h3>
 
                     <label class="campo">
                         <span>Nome <small>(opcional)</small></span>
@@ -73,17 +81,12 @@
 
                     <p class="add-mira-erro" id="mira-erro" aria-live="polite"></p>
 
-                    <button type="submit" class="btn btn-primary" id="btn-adicionar" disabled>Adicionar mira</button>
-                </div>
-
-                <div class="card-image mira-preview">
-                    <canvas id="previa-mira"></canvas>
-                    <span class="previa-dica" id="previa-dica">A prévia aparece aqui</span>
+                    <button type="submit" class="add-mira-botao" id="btn-adicionar" disabled>Adicionar mira</button>
                 </div>
             </form>
 
             <!-- Os cards são criados pelo miras.js -->
-            <div class="miras-grid" id="miras-grid"></div>
+            <div class="miras-grid mira-lista" id="miras-grid"></div>
         </div>
     </section>
 

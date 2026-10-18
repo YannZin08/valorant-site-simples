@@ -143,16 +143,6 @@ function hexParaRgb(hex) {
     };
 }
 
-/** Pequeno resumo para mostrar no card (ex.: ["Ponto", "Linhas internas"]) */
-function resumoDaMira(mira) {
-    const itens = [];
-    if (mira.ponto.ligado && mira.ponto.opacidade > 0) itens.push('Ponto');
-    if (mira.internas.ligado) itens.push('Linhas internas');
-    if (mira.externas.ligado) itens.push('Linhas externas');
-    if (mira.contorno.ligado) itens.push('Contorno');
-    return itens;
-}
-
 
 /* ============================================
    2) TRANSFORMAR A MIRA EM RETÂNGULOS
