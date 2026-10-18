@@ -937,3 +937,107 @@ body {
         min-height: 200px;
     }
 }
+
+/* ============================================
+   AGENTES — página gerada pelo agentes.js
+   ============================================ */
+
+.mapas-topo {
+    margin-bottom: 30px;
+}
+
+.mapas-topo h2 {
+    margin-bottom: 6px;
+}
+
+.rotacao-info {
+    font-weight: 600;
+    color: #22d3ee;
+}
+
+.rotacao-legenda {
+    margin-top: 4px;
+    font-size: 0.9rem;
+    color: #94a3b8;
+}
+
+.agent-map-card .card-image {
+    cursor: pointer;
+}
+
+.mapa-ver {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.75);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #e0e7ff;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.agent-map-card:hover .mapa-ver {
+    opacity: 1;
+}
+
+/* Quando a imagem do mapa não carrega */
+.card-image.sem-imagem {
+    background: linear-gradient(135deg, #1e293b, #312e81);
+}
+
+.card-image.sem-imagem img {
+    visibility: hidden;
+}
+
+.card-content .mapa-fonte {
+    margin: -4px 0 18px;
+    font-size: 0.8rem;
+    color: #94a3b8;
+}
+
+.agent-pick {
+    margin-top: -10px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #22d3ee;
+}
+
+.fora-rotacao {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 50px;
+}
+
+.map-modal-content {
+    position: relative;
+}
+
+/* 4 agentes por linha cabendo no card (antes a imagem fixa de 96px estourava) */
+.agent-map-card .agents-list {
+    gap: 12px 6px;
+}
+
+.agent-map-card .agent {
+    min-width: 0;
+    gap: 6px;
+}
+
+.agent-map-card .agent img {
+    width: 100%;
+    max-width: 64px;
+    height: auto;
+    aspect-ratio: 1 / 1;
+}
+
+.agent-map-card .agent span {
+    font-size: 0.82rem;
+    overflow-wrap: anywhere;
+}
+
+.agent-map-card .agent-pick {
+    margin-top: -6px;
+}

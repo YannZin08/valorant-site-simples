@@ -14,7 +14,7 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Melhores Agentes</h1>
-            <p>Os melhores agentes para cada mapa do Valorant.</p>
+            <p>Os agentes mais fortes em cada mapa da rotação competitiva atual.</p>
 
             <div class="hero-buttons">
                 <button class="btn btn-secondary" onclick="window.location.href='index.html'">
@@ -25,219 +25,42 @@
     </section>
 
     <!-- MAPAS -->
-    <div class="miras-grid">
-
-        <!-- MAPA: CORRODE -->
-        <div class="card agent-map-card">
-            <div class="card-image" onclick="openMap('Corrode', 'assets/img-mapas/corrode.jpg')">
-                <img src="assets/img-mapas/corroid.jpg" alt="Corrode">
+    <section class="miras-section">
+        <div class="container">
+            <div class="mapas-topo">
+                <h2>Rotação competitiva</h2>
+                <p class="rotacao-info" id="rotacao-info"></p>
+                <p class="rotacao-legenda">A % embaixo de cada agente é quantas vezes ele foi escolhido naquele mapa em
+                    partidas profissionais.</p>
             </div>
 
-            <div class="card-content">
-                <h3>CORRODE</h3>
+            <!-- Os cards são criados pelo agentes.js a partir do mapas-data.js -->
+            <div class="miras-grid" id="mapas-grid"></div>
 
-                <div class="agents-list">
-                    <div class="agent"><img src="assets/img-agentes/omen.png"><span>Omen</span></div>
-                    <div class="agent"><img src="assets/img-agentes/sova.png"><span>Sova</span></div>
-                    <div class="agent"><img src="assets/img-agentes/killjoy.png"><span>Killjoy</span></div>
-                    <div class="agent"><img src="assets/img-agentes/phoenix.png"><span>Phoenix</span></div>
-                    <div class="agent"><img src="assets/img-agentes/fade.png"><span>Fade</span></div>
-                    <div class="agent"><img src="assets/img-agentes/neon.png"><span>Neon</span></div>
-                    <div class="agent"><img src="assets/img-agentes/chamber.png"><span>Chamber</span></div>
-                    <div class="agent"><img src="assets/img-agentes/cypher.png"><span>Cypher</span></div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- MAPA: BIND -->
-        <div class="card agent-map-card">
-            <div class="card-image" onclick="openMap('Bind', 'assets/img-mapas/Bind_minimap.webp')">
-                <img src="assets/img-mapas/bind.png" alt="Bind">
-            </div>
-            
-            <div class="card-content">
-                <h3>BIND</h3>
-
-                <div class="agents-list">
-                    <div class="agent"><img src="assets/img-agentes/raze.png"><span>Raze</span></div>
-                    <div class="agent"><img src="assets/img-agentes/brimstone.png"><span>Brimstone</span></div>
-                    <div class="agent"><img src="assets/img-agentes/fade.png"><span>Fade</span></div>
-                    <div class="agent"><img src="assets/img-agentes/killjoy.png"><span>Killjoy</span></div>
-                    <div class="agent"><img src="assets/img-agentes/clove.png"><span>Clove</span></div>
-                    <div class="agent"><img src="assets/img-agentes/kayo.png"><span>Kayo</span></div>
-                    <div class="agent"><img src="assets/img-agentes/sage.png"><span>Sage</span></div>
-                    <div class="agent"><img src="assets/img-agentes/cypher.png"><span>Cypher</span></div>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- MAPA: HAVEN -->
-        <div class="card agent-map-card">
-            <div class="card-image" onclick="openMap('Haven', 'assets/img-mapas/Haven_minimap.webp')">
-                <img src="assets/img-mapas/haven.png" alt="Haven">
-            </div>
-
-            <div class="card-content">
-                <h3>HAVEN</h3>
-
-                <div class="agents-list">
-                    <div class="agent"><img src="assets/img-agentes/jett.png"><span>Jett </span></div>
-                    <div class="agent"><img src="assets/img-agentes/sova.png"><span>Sova</span></div>
-                    <div class="agent"><img src="assets/img-agentes/killjoy.png"><span>Killjoy</span></div>
-                    <div class="agent"><img src="assets/img-agentes/clove.png"><span>Clove</span></div>
-                    <div class="agent"><img src="assets/img-agentes/omen.png"><span>Omen</span></div>
-                    <div class="agent"><img src="assets/img-agentes/breach.png"><span>Breach</span></div>
-                    <div class="agent"><img src="assets/img-agentes/sage.png"><span>Sage</span></div>
-                    <div class="agent"><img src="assets/img-agentes/cypher.png"><span>Cypher</span></div>
-                </div>
-            </div>
-
-        </div>
-
-
-        <!-- MAPA: Abyss -->
-        <div class="card agent-map-card">
-            <div class="card-image" onclick="openMap('Abyss', 'assets/img-mapas/Abyss_minimap.webp')">
-                <img src="assets/img-mapas/abyss.png" alt="Abyss">
-            </div>
-
-            <div class="card-content">
-                <h3>ABYSS</h3>
-
-                <div class="agents-list">
-                    <div class="agent"><img src="assets/img-agentes/jett.png"><span>Jett </span></div>
-                    <div class="agent"><img src="assets/img-agentes/sova.png"><span>Sova</span></div>
-                    <div class="agent"><img src="assets/img-agentes/cypher.png"><span>Cypher</span></div>
-                    <div class="agent"><img src="assets/img-agentes/fade.png"><span>Fade</span></div>
-                    <div class="agent"><img src="assets/img-agentes/omen.png"><span>Omen</span></div>
-                    <div class="agent"><img src="assets/img-agentes/astra.png"><span>Astra</span></div>
-                    <div class="agent"><img src="assets/img-agentes/yoru.png"><span>Yoru</span></div>
-                    <div class="agent"><img src="assets/img-agentes/killjoy.png"><span>killjoy</span></div>
-                </div>
+            <div class="fora-rotacao">
+                <span class="controle-rotulo">Fora da rotação</span>
+                <div class="mira-tags" id="fora-rotacao"></div>
             </div>
         </div>
+    </section>
 
-
-
-        <!-- MAPA: Pearl -->
-        <div class="card agent-map-card">
-            <div class="card-image" onclick="openMap('Abyss', 'assets/img-mapas/Pearl_minimap.webp')">
-                <img src="assets/img-mapas/pearl.png" alt="Pearl">
-            </div>
-
-            <div class="card-content">
-                <h3>PEARL</h3>
-
-                <div class="agents-list">
-                    <div class="agent"><img src="assets/img-agentes/jett.png"><span>Jett </span></div>
-                    <div class="agent"><img src="assets/img-agentes/fade.png"><span>Fade</span></div>
-                    <div class="agent"><img src="assets/img-agentes/killjoy.png"><span>Killjoy</span></div>
-                    <div class="agent"><img src="assets/img-agentes/viper.png"><span>Viper</span></div>
-                    <div class="agent"><img src="assets/img-agentes/omen.png"><span>Omen</span></div>
-                    <div class="agent"><img src="assets/img-agentes/sova.png"><span>Sova</span></div>
-                    <div class="agent"><img src="assets/img-agentes/sage.png"><span>Sage</span></div>
-                    <div class="agent"><img src="assets/img-agentes/chamber.png"><span>Chamber</span></div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <!-- MAPA: Split -->
-        <div class="card agent-map-card">
-            <div class="card-image" onclick="openMap('Split', 'assets/img-mapas/Split_minimap.webp')">
-                <img src="assets/img-mapas/split.png" alt="Split">
-            </div>
-
-            <div class="card-content">
-                <h3>SPLIT</h3>
-
-                <div class="agents-list">
-                    <div class="agent"><img src="assets/img-agentes/raze.png"><span>Raze </span></div>
-                    <div class="agent"><img src="assets/img-agentes/sova.png"><span>Sova</span></div>
-                    <div class="agent"><img src="assets/img-agentes/cypher.png"><span>Cypher</span></div>
-                    <div class="agent"><img src="assets/img-agentes/breach.png"><span>Breach</span></div>
-                    <div class="agent"><img src="assets/img-agentes/omen.png"><span>Omen</span></div>
-                    <div class="agent"><img src="assets/img-agentes/fade.png"><span>Fade</span></div>
-                    <div class="agent"><img src="assets/img-agentes/sage.png"><span>Sage</span></div>
-                    <div class="agent"><img src="assets/img-agentes/yoru.png"><span>Yoru</span></div>
-                </div>
-            </div>
-        </div>
-
-
-
-        <!-- MAPA: Breeze -->
-        <div class="card agent-map-card">
-            <div class="card-image" onclick="openMap('Breeze', 'assets/img-mapas/Breeze_minimap.webp')">
-                <img src="assets/img-mapas/breeze.jpg" alt="Breeze">
-            </div>
-
-            <div class="card-content">
-                <h3>Breeze</h3>
-
-                <div class="agents-list">
-                    <div class="agent"><img src="assets/img-agentes/jett.png"><span>Jett </span></div>
-                    <div class="agent"><img src="assets/img-agentes/sova.png"><span>Sova</span></div>
-                    <div class="agent"><img src="assets/img-agentes/cypher.png"><span>Cypher</span></div>
-                    <div class="agent"><img src="assets/img-agentes/breach.png"><span>Breach</span></div>
-                    <div class="agent"><img src="assets/img-agentes/omen.png"><span>Omen</span></div>
-                    <div class="agent"><img src="assets/img-agentes/fade.png"><span>Fade</span></div>
-                    <div class="agent"><img src="assets/img-agentes/viper.png"><span>Viper</span></div>
-                    <div class="agent"><img src="assets/img-agentes/yoru.png"><span>Yoru</span></div>
-                </div>
-            </div>
-        </div>
-
-
-        <div class="map-modal" id="mapModal">
+    <!-- MODAL DO MINIMAPA -->
+    <div class="map-modal" id="mapModal">
         <div class="map-modal-content">
             <button class="close-modal" onclick="closeMap()">✕</button>
-
             <h2 id="mapTitle">Mapa</h2>
-
-            <img id="mapImage" src="" alt="Mapa Top View">
-
-            <p class="map-hint">
-                
+            <img id="mapImage" src="" alt="Minimapa">
         </div>
-        <script src="script.js"></script>
     </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </div>
-
 
     <!-- FOOTER -->
     <footer class="footer">
         <p>© 2026 Valorant Agents by Yann. Não afiliado à Riot Games.</p>
     </footer>
 
+    <script src="script.js"></script>
+    <script src="mapas-data.js"></script>
+    <script src="agentes.js"></script>
 </body>
 
 </html>
