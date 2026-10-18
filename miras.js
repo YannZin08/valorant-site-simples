@@ -18,6 +18,8 @@ const textoErro = document.getElementById('mira-erro');
 const botaoAdicionar = document.getElementById('btn-adicionar');
 const canvasPrevia = document.getElementById('previa-mira');
 const dicaPrevia = document.getElementById('previa-dica');
+const botaoNovaMira = document.getElementById('btn-nova-mira');
+const botaoCancelar = document.getElementById('btn-cancelar');
 
 
 /* ============================================
@@ -61,7 +63,7 @@ function renderizarMiras() {
     todas.forEach(item => grid.appendChild(criarCard(item)));
 
     document.getElementById('miras-contagem').textContent =
-        todas.length === 1 ? '1 salva' : `${todas.length} salvas`;
+        todas.length === 1 ? '1 mira salva' : `${todas.length} miras salvas`;
 
     redesenharTudo();
 }
@@ -74,7 +76,7 @@ const ICONE_LIXEIRA = `
 
 function criarCard(item) {
     const card = document.createElement('div');
-    card.className = 'mira-card';
+    card.className = 'cartao mira-card';
     card.innerHTML = `
         <div class="mira-preview">
             <canvas></canvas>
@@ -84,8 +86,8 @@ function criarCard(item) {
                 <h3 class="mira-nome"></h3>
             </div>
             <div class="mira-acoes">
-                <code class="hidden-code"></code>
-                <button type="button" class="mira-copiar" onclick="copiarID(this)">Copiar</button>
+                <code class="codigo-oculto"></code>
+                <button type="button" class="botao botao-secundario botao-pequeno" onclick="copiarID(this)">Copiar</button>
             </div>
         </div>
     `;
@@ -100,13 +102,13 @@ function criarCard(item) {
     // Miras do navegador ganham selo e botão de excluir
     if (item.doNavegador) {
         const selo = document.createElement('span');
-        selo.className = 'mira-selo';
+        selo.className = 'selo';
         selo.textContent = 'Sua';
         card.querySelector('.mira-info').appendChild(selo);
 
         const botaoExcluir = document.createElement('button');
         botaoExcluir.type = 'button';
-        botaoExcluir.className = 'mira-excluir';
+        botaoExcluir.className = 'botao botao-fantasma botao-pequeno botao-icone';
         botaoExcluir.title = 'Excluir mira';
         botaoExcluir.setAttribute('aria-label', `Excluir ${item.nome}`);
         botaoExcluir.innerHTML = ICONE_LIXEIRA;
@@ -170,14 +172,29 @@ function adicionarMira(evento) {
         return;
     }
 
-    form.reset();
-    atualizarPrevia();
+    fecharFormulario();
     renderizarMiras();
 
     // Dá um destaque na mira nova (ela é a primeira do grid)
     const cardNovo = grid.firstElementChild;
     cardNovo.classList.add('mira-nova');
     cardNovo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+
+// Abrir e fechar o painel "Nova mira"
+function abrirFormulario() {
+    form.hidden = false;
+    botaoNovaMira.setAttribute('aria-expanded', 'true');
+    atualizarPrevia(); // o canvas só tem tamanho depois que aparece
+    campoCodigo.focus();
+}
+
+function fecharFormulario() {
+    form.reset();
+    form.hidden = true;
+    botaoNovaMira.setAttribute('aria-expanded', 'false');
+    atualizarPrevia();
 }
 
 
@@ -194,10 +211,14 @@ function configurarOpcoes(idGrupo, atributo, aoEscolher) {
 
 function marcarAtivos() {
     document.querySelectorAll('#opcoes-fundo [data-fundo]').forEach(botao => {
-        botao.classList.toggle('active', botao.dataset.fundo === visual.fundo);
+        const ativo = botao.dataset.fundo === visual.fundo;
+        botao.classList.toggle('active', ativo);
+        botao.setAttribute('aria-pressed', ativo);
     });
     document.querySelectorAll('#opcoes-zoom [data-zoom]').forEach(botao => {
-        botao.classList.toggle('active', Number(botao.dataset.zoom) === visual.zoom);
+        const ativo = Number(botao.dataset.zoom) === visual.zoom;
+        botao.classList.toggle('active', ativo);
+        botao.setAttribute('aria-pressed', ativo);
     });
 }
 
@@ -249,6 +270,8 @@ configurarOpcoes('opcoes-zoom', 'zoom', zoom => mudarVisual({ zoom: Number(zoom)
 
 campoCodigo.addEventListener('input', atualizarPrevia);
 form.addEventListener('submit', adicionarMira);
+botaoNovaMira.addEventListener('click', () => (form.hidden ? abrirFormulario() : fecharFormulario()));
+botaoCancelar.addEventListener('click', fecharFormulario);
 
 canvasPrevia.dataset.codigo = '';
 renderizarMiras();

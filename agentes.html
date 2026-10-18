@@ -4,63 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Melhores Agentes por Mapa - Valorant</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Agentes por mapa · Valorant Hub</title>
+    <meta name="description" content="Os agentes mais escolhidos em cada mapa da rotação competitiva do Valorant.">
+    <link rel="stylesheet" href="style.css?v=4">
 </head>
 
 <body>
 
-    <!-- HERO -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Melhores Agentes</h1>
-            <p>Os agentes mais fortes em cada mapa da rotação competitiva atual.</p>
-
-            <div class="hero-buttons">
-                <button class="btn btn-secondary" onclick="window.location.href='index.html'">
-                    ← Voltar
-                </button>
-            </div>
+    <!-- CABEÇALHO (igual nas 3 páginas; só muda o aria-current) -->
+    <header class="cabecalho">
+        <div class="container cabecalho-conteudo">
+            <a class="marca" href="index.html">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2.5" aria-hidden="true">
+                    <path d="M12 2v6M12 16v6M2 12h6M16 12h6" />
+                    <rect x="11" y="11" width="2" height="2" fill="currentColor" stroke="none" />
+                </svg>
+                <span>Valorant Hub</span>
+            </a>
+            <nav class="nav" aria-label="Seções do site">
+                <a class="nav-link" href="index.html">Miras</a>
+                <a class="nav-link" href="agentes.html" aria-current="page">Agentes</a>
+                <a class="nav-link" href="skins.html">Skins</a>
+            </nav>
         </div>
-    </section>
+    </header>
 
-    <!-- MAPAS -->
-    <section class="miras-section">
-        <div class="container">
-            <div class="mapas-topo">
-                <h2>Rotação competitiva</h2>
-                <p class="rotacao-info" id="rotacao-info"></p>
-                <p class="rotacao-legenda">A % embaixo de cada agente é quantas vezes ele foi escolhido naquele mapa em
-                    partidas profissionais.</p>
+    <main>
+        <section class="pagina-topo">
+            <div class="container">
+                <p class="pagina-rotulo" id="rotacao-info">Rotação competitiva</p>
+                <h1>Agentes por mapa</h1>
+                <p class="pagina-descricao">Os agentes mais escolhidos em cada mapa da rotação competitiva. A
+                    porcentagem mostra em quantas partidas profissionais o agente foi escolhido naquele mapa. Clique
+                    na imagem para ver o minimapa.</p>
             </div>
+        </section>
 
+        <section class="container">
             <!-- Os cards são criados pelo agentes.js a partir do mapas-data.js -->
-            <div class="miras-grid" id="mapas-grid"></div>
+            <div class="grade" id="mapas-grid"></div>
 
             <div class="fora-rotacao">
-                <span class="controle-rotulo">Fora da rotação</span>
-                <div class="mira-tags" id="fora-rotacao"></div>
+                <span class="rotulo">Fora da rotação</span>
+                <div class="etiquetas" id="fora-rotacao"></div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
 
-    <!-- MODAL DO MINIMAPA -->
-    <div class="map-modal" id="mapModal">
-        <div class="map-modal-content">
-            <button class="close-modal" onclick="closeMap()">✕</button>
+    <!-- MINIMAPA (abre ao clicar na imagem de um mapa) -->
+    <div class="modal" id="mapModal" role="dialog" aria-modal="true" aria-labelledby="mapTitle">
+        <div class="modal-conteudo">
+            <button type="button" class="botao botao-fantasma botao-pequeno modal-fechar" onclick="closeMap()"
+                aria-label="Fechar minimapa">✕</button>
             <h2 id="mapTitle">Mapa</h2>
             <img id="mapImage" src="" alt="Minimapa">
         </div>
     </div>
 
-    <!-- FOOTER -->
-    <footer class="footer">
-        <p>© 2026 Valorant Agents by Yann. Não afiliado à Riot Games.</p>
+    <!-- RODAPÉ -->
+    <footer class="rodape">
+        <div class="container rodape-conteudo">
+            <span><strong>Valorant Hub</strong> · feito por Yann</span>
+            <span>Site de fã. Não afiliado à Riot Games.</span>
+        </div>
     </footer>
 
-    <script src="script.js"></script>
-    <script src="mapas-data.js"></script>
-    <script src="agentes.js"></script>
+    <script src="script.js?v=4"></script>
+    <script src="mapas-data.js?v=4"></script>
+    <script src="agentes.js?v=4"></script>
 </body>
 
 </html>
