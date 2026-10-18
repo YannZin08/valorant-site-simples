@@ -190,7 +190,7 @@ function montarPecas(mira) {
 /**
  * Desenha o fundo e a mira no canvas.
  * opcoes.zoom: 1 = tamanho real (1 pixel do jogo = 1 pixel da tela)
- * opcoes.fundo: 'parede' | 'clara' | 'escura' | 'mapa'
+ * opcoes.fundo: 'parede' | 'clara' | 'escura'
  */
 function desenharMira(canvas, mira, opcoes = {}) {
     const zoom = opcoes.zoom || 2;
@@ -257,26 +257,13 @@ const FUNDOS = {
     parede: { cor: [119, 115, 106], ruido: 16 }, // parecida com o Campo de Treino
     clara: { cor: [206, 200, 187], ruido: 12 },
     escura: { cor: [33, 37, 43], ruido: 10 },
-    mapa: { imagem: 'assets/img-mapas/haven.png' },
 };
 
 const cacheFundos = {};
 
 function desenharFundo(ctx, largura, altura, nome) {
-    const fundo = FUNDOS[nome] || FUNDOS.parede;
-
-    // Fundo com imagem de mapa: enquanto carrega, usa a parede
-    if (fundo.imagem) {
-        const img = carregarImagemFundo(fundo.imagem);
-        if (img.complete && img.naturalWidth) {
-            const escala = Math.max(largura / img.naturalWidth, altura / img.naturalHeight);
-            const w = img.naturalWidth * escala;
-            const h = img.naturalHeight * escala;
-            ctx.drawImage(img, (largura - w) / 2, (altura - h) / 2, w, h);
-            return;
-        }
-        return desenharFundo(ctx, largura, altura, 'parede');
-    }
+    if (!FUNDOS[nome]) nome = 'parede';
+    const fundo = FUNDOS[nome];
 
     // Fundo liso com "granulado" para parecer uma superfície do jogo
     ctx.fillStyle = ctx.createPattern(criarTextura(nome, fundo), 'repeat');
@@ -317,15 +304,4 @@ function criarTextura(nome, fundo) {
 
     cacheFundos[nome] = textura;
     return textura;
-}
-
-// Carrega a imagem do mapa uma vez; quando terminar, avisa a página para redesenhar
-function carregarImagemFundo(src) {
-    if (cacheFundos[src]) return cacheFundos[src];
-
-    const img = new Image();
-    img.onload = () => document.dispatchEvent(new Event('reticula:fundo-pronto'));
-    img.src = src;
-    cacheFundos[src] = img;
-    return img;
 }

@@ -9,6 +9,7 @@ const CHAVE_VISUAL = 'valorant-miras-visual';
 
 // Opções de visualização escolhidas nos botões "Fundo" e "Zoom"
 const visual = { fundo: 'parede', zoom: 2 };
+const ZOOMS = [2, 4];
 
 const grid = document.getElementById('miras-grid');
 const form = document.getElementById('form-mira');
@@ -229,9 +230,13 @@ function mudarVisual(mudanca) {
     redesenharTudo();
 }
 
+// Usa o que ficou salvo só se ainda for uma opção que existe
+// (ex.: quem tinha "Mapa" ou zoom "Real" salvo volta para o padrão)
 function carregarVisual() {
     try {
-        Object.assign(visual, JSON.parse(localStorage.getItem(CHAVE_VISUAL)) || {});
+        const salvo = JSON.parse(localStorage.getItem(CHAVE_VISUAL)) || {};
+        if (FUNDOS[salvo.fundo]) visual.fundo = salvo.fundo;
+        if (ZOOMS.includes(salvo.zoom)) visual.zoom = salvo.zoom;
     } catch { }
 }
 
@@ -254,9 +259,6 @@ window.addEventListener('resize', () => {
     clearTimeout(esperaResize);
     esperaResize = setTimeout(redesenharTudo, 100);
 });
-
-// Quando a imagem do mapa termina de carregar, redesenha com ela
-document.addEventListener('reticula:fundo-pronto', redesenharTudo);
 
 
 /* ============================================

@@ -559,13 +559,6 @@ textarea {
     transition: inset 0.3s ease;
 }
 
-/* Ao passar o mouse, o visor "trava" na mira */
-.mira-card:hover .mira-preview::after,
-.mira-card:focus-within .mira-preview::after {
-    --cor: var(--cor-destaque);
-    inset: 22% 30%;
-}
-
 /* No formulário, trava quando o código colado é válido */
 .mira-preview.travada::after {
     --cor: var(--cor-destaque);
