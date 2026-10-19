@@ -49,15 +49,16 @@ const AGENTES = {
     yoru: { nome: 'Yoru', img: 'assets/img-agentes/yoru.png' },
 };
 
-// Imagens do Summit ainda não estão na pasta assets: vêm do valorant-api.com
-const SUMMIT_API = 'https://media.valorant-api.com/maps/756da597-416b-c0f2-f47b-afbdf28670bc';
+// O minimapa do Summit ainda não está na pasta assets: vem do valorant-api.com.
+// Quando tiver o arquivo, salve como assets/img-mapas/Summit_minimap.webp e troque abaixo.
+const SUMMIT_MINIMAPA_API = 'https://media.valorant-api.com/maps/756da597-416b-c0f2-f47b-afbdf28670bc/displayicon.png';
 
 const MAPAS = [
     {
         nome: 'Summit',
         selo: 'Novo',
-        imagem: `${SUMMIT_API}/splash.png`,
-        minimapa: `${SUMMIT_API}/displayicon.png`,
+        imagem: 'assets/img-mapas/summit.webp',
+        minimapa: SUMMIT_MINIMAPA_API,
         fonte: 'Champions 2026 (pro)',
         agentes: [
             { id: 'neon', pick: 82 },
@@ -122,8 +123,8 @@ const MAPAS = [
     },
     {
         nome: 'Sunset',
-        imagem: 'assets/img-mapas/sunset.png',
-        minimapa: 'https://media.valorant-api.com/maps/92584fbe-486a-b1b2-9faa-39b0f486b498/displayicon.png',
+        imagem: 'assets/img-mapas/sunset.webp',
+        minimapa: 'assets/img-mapas/Sunset_minimap.webp',
         fonte: 'Champions 2026 (pro)',
         agentes: [
             { id: 'omen', pick: 100 },
@@ -138,8 +139,8 @@ const MAPAS = [
     },
     {
         nome: 'Lotus',
-        imagem: 'assets/img-mapas/lotus.png',
-        minimapa: 'https://media.valorant-api.com/maps/2fe4ed3a-450a-948b-6d6b-e89a78e680a9/displayicon.png',
+        imagem: 'assets/img-mapas/lotus.webp',
+        minimapa: 'assets/img-mapas/Lotus_minimap.webp',
         fonte: 'Champions 2026 (pro)',
         agentes: [
             { id: 'omen', pick: 100 },

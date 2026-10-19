@@ -54,8 +54,19 @@ function copiarComTextarea(texto) {
    ============================================ */
 
 function openMap(name, image) {
+    const imagem = document.getElementById('mapImage');
+    const aviso = document.getElementById('mapAviso');
+
     document.getElementById('mapTitle').innerText = name;
-    document.getElementById('mapImage').src = image;
+    imagem.hidden = false;
+    aviso.hidden = true;
+    // Se o minimapa não carregar, mostra um aviso em vez da imagem quebrada
+    imagem.onerror = () => {
+        imagem.hidden = true;
+        aviso.hidden = false;
+    };
+    imagem.alt = `Minimapa de ${name}`;
+    imagem.src = image;
     document.getElementById('mapModal').classList.add('active');
 }
 

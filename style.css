@@ -522,6 +522,14 @@ textarea {
     border-radius: var(--raio-pequeno);
 }
 
+.modal-aviso {
+    padding: 64px 16px;
+    font-family: var(--fonte-mono);
+    font-size: 0.9rem;
+    text-align: center;
+    color: var(--cor-suave);
+}
+
 .modal-fechar {
     position: absolute;
     top: 14px;
