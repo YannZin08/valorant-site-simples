@@ -638,6 +638,37 @@ textarea {
     }
 }
 
+/* ---------- Seções extras da página (ex.: Miras de pros) ---------- */
+
+.secao {
+    margin-top: 64px;
+}
+
+.secao-topo {
+    margin-bottom: 24px;
+}
+
+.secao-topo h2 {
+    font-family: var(--fonte-display);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.secao-descricao {
+    max-width: 640px;
+    margin-top: 10px;
+    color: var(--cor-suave);
+}
+
+.secao-descricao a {
+    color: var(--cor-destaque);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 /* ---------- Aviso do backup (importar/exportar) ---------- */
 
 .aviso {

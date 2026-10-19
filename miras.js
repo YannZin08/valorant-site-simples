@@ -12,6 +12,7 @@ const visual = { fundo: 'parede', zoom: 2 };
 const ZOOMS = [2, 4];
 
 const grid = document.getElementById('miras-grid');
+const gridPros = document.getElementById('pros-grid');
 
 
 /* ============================================
@@ -66,6 +67,22 @@ function renderizarMiras() {
         todas.length === 1 ? '1 mira salva' : `${todas.length} miras salvas`;
 
     redesenharTudo();
+}
+
+// Miras de pros: mesmos cards, numa seção própria (dados no miras-data.js)
+function renderizarPros() {
+    gridPros.innerHTML = '';
+    MIRAS_PROS.forEach(item => gridPros.appendChild(criarCard(item)));
+
+    // Linha embaixo do título: quantas são e de onde vieram os códigos
+    const fonte = document.getElementById('pros-fonte');
+    const link = document.createElement('a');
+    link.href = FONTE_PROS.url;
+    link.target = '_blank';
+    link.rel = 'noopener';
+    link.textContent = FONTE_PROS.nome;
+    fonte.textContent = `${MIRAS_PROS.length} jogadores profissionais. Códigos conferidos no `;
+    fonte.append(link, ` (atualizado em ${FONTE_PROS.atualizadoEm}). Os pros trocam de mira com frequência.`);
 }
 
 const ICONE_LIXEIRA = `
@@ -224,4 +241,5 @@ carregarVisual();
 marcarAtivos();
 configurarOpcoes('opcoes-fundo', 'fundo', fundo => mudarVisual({ fundo }));
 configurarOpcoes('opcoes-zoom', 'zoom', zoom => mudarVisual({ zoom: Number(zoom) }));
-renderizarMiras();
+renderizarPros();
+renderizarMiras(); // esta já redesenha todas as prévias, inclusive as dos pros

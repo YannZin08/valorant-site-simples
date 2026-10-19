@@ -80,7 +80,7 @@ function lerSecoes(codigo) {
 
         const chave = parte;
         const valor = partes[i + 1];
-        if (!chaveValida(chave) || !valorValido(chave, valor)) return null;
+        if (!chaveValida(chave) || !valorValido(chave, valor, secaoAtual)) return null;
 
         secoes[secaoAtual][chave] = valor;
         i++; // pula o valor, que já foi lido
@@ -100,11 +100,15 @@ function chaveValida(chave) {
     return /^[01]?[a-z]$/.test(chave);
 }
 
-// "u" é uma cor em hexadecimal; o resto são números
-function valorValido(chave, valor) {
+// Valores são números, menos as cores em hexadecimal:
+// "u" (cor personalizada) e, na mira de sniper (S), chaves como "t;000000FF"
+function valorValido(chave, valor, secao) {
     if (valor === undefined || valor === '') return false;
-    if (chave === 'u') return /^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(valor);
-    return /^-?\d*\.?\d+$/.test(valor);
+    const ehNumero = /^-?\d*\.?\d+$/.test(valor);
+    const ehCor = /^[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$/.test(valor);
+    if (chave === 'u') return ehCor;
+    if (secao === 'S') return ehNumero || ehCor;
+    return ehNumero;
 }
 
 // Valor de uma chave da seção P: o que está no código ou o padrão do jogo
