@@ -669,22 +669,6 @@ textarea {
     text-underline-offset: 3px;
 }
 
-/* ---------- Aviso do backup (importar/exportar) ---------- */
-
-.aviso {
-    margin-bottom: 20px;
-    padding: 10px 14px;
-    background: var(--cor-destaque-fundo);
-    border: 1px solid rgba(34, 211, 238, 0.35);
-    border-radius: var(--raio-pequeno);
-    font-size: 0.9rem;
-}
-
-.aviso-erro {
-    background: rgba(248, 113, 113, 0.1);
-    border-color: rgba(248, 113, 113, 0.4);
-}
-
 /* ---------- Editor de mira ---------- */
 
 .editor {
@@ -707,6 +691,22 @@ textarea {
     z-index: 2;
     align-self: start;
     aspect-ratio: 16 / 10;
+}
+
+/* Texto no meio da prévia enquanto não tem mira (modo Importar) */
+.previa-dica {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    font-family: var(--fonte-mono);
+    font-size: 0.85rem;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
 }
 
 .editor-campos {
@@ -1243,16 +1243,11 @@ textarea {
         grid-template-columns: 1fr;
     }
 
-    /* "+ Nova mira" em cima, ocupando a largura; Importar e Exportar embaixo */
+    /* Importar e "+ Nova mira" lado a lado, ocupando a largura */
     .barra-acoes {
         display: grid;
         grid-template-columns: 1fr 1fr;
         width: 100%;
-    }
-
-    .barra-acoes .botao-primario {
-        grid-column: 1 / -1;
-        order: -1;
     }
 
     .ajuste {

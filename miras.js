@@ -1,7 +1,7 @@
 /* ============================================
    PÁGINA DE MIRAS
    Monta os cards e guarda as suas miras no navegador (localStorage).
-   O editor fica no editor.js e o backup no backup.js.
+   O editor (nova mira, importar e editar) fica no editor.js.
    ============================================ */
 
 const CHAVE_MINHAS_MIRAS = 'valorant-minhas-miras';
@@ -161,9 +161,9 @@ function excluirMira(id, nome) {
     renderizarMiras();
 }
 
-// Dá um destaque rápido num card (depois de salvar ou importar)
+// Dá um destaque rápido num card (depois de salvar)
 function destacarMira(id) {
-    const card = id !== undefined ? grid.querySelector(`[data-id="${id}"]`) : grid.firstElementChild;
+    const card = grid.querySelector(`[data-id="${id}"]`);
     if (!card) return;
     card.classList.add('mira-nova');
     card.scrollIntoView({ behavior: 'smooth', block: 'center' });

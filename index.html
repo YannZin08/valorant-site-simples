@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Miras · Valorant Hub</title>
     <meta name="description" content="Miras do Valorant com prévia de como ficam no jogo e código para copiar.">
-    <!-- "?v=6": mude o número quando alterar o CSS/JS, assim o navegador baixa a versão nova -->
-    <link rel="stylesheet" href="style.css?v=6">
+    <!-- "?v=7": mude o número quando alterar o CSS/JS, assim o navegador baixa a versão nova -->
+    <link rel="stylesheet" href="style.css?v=7">
 </head>
 
 <body>
@@ -62,37 +62,27 @@
                     </div>
                 </div>
 
-                <!-- Backup e criar mira -->
+                <!-- Trazer a mira do jogo / criar uma do zero -->
                 <div class="barra-acoes">
-                    <button type="button" class="botao botao-fantasma" id="btn-importar"
-                        title="Carregar miras de um arquivo de backup">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M12 15V3M7 8l5-5 5 5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
-                        </svg>
-                        Importar
-                    </button>
-                    <button type="button" class="botao botao-fantasma" id="btn-exportar"
-                        title="Baixar suas miras num arquivo de backup">
+                    <button type="button" class="botao botao-fantasma" id="btn-importar" aria-expanded="false"
+                        aria-controls="form-mira" title="Trazer a mira que você usa no jogo">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M12 3v12M7 10l5 5 5-5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
                         </svg>
-                        Exportar
+                        Importar
                     </button>
                     <button type="button" class="botao botao-primario" id="btn-nova-mira" aria-expanded="false"
                         aria-controls="form-mira">+ Nova mira</button>
-                    <input type="file" id="arquivo-backup" accept=".json,.txt,application/json,text/plain" hidden>
                 </div>
             </div>
 
-            <!-- Resultado do importar/exportar -->
-            <p class="aviso" id="aviso-miras" role="status" hidden></p>
-
-            <!-- EDITOR (fica escondido até clicar em "+ Nova mira" ou no botão de editar de um card) -->
+            <!-- EDITOR (abre pelo "+ Nova mira", pelo "Importar" ou pelo botão de editar de um card) -->
             <form class="cartao editor" id="form-mira" autocomplete="off" hidden>
                 <div class="mira-preview editor-previa">
                     <canvas id="previa-mira"></canvas>
+                    <span class="previa-dica" id="previa-dica" hidden>A mira aparece aqui quando você colar o
+                        código</span>
                 </div>
 
                 <div class="editor-campos">
@@ -110,7 +100,7 @@
                     <label class="campo">
                         <span>Código da mira</span>
                         <textarea id="mira-codigo" rows="2" spellcheck="false"></textarea>
-                        <small>Cole um código do jogo para editar, ou ajuste nos controles abaixo.</small>
+                        <small id="dica-codigo">Cole um código do jogo para editar, ou ajuste nos controles abaixo.</small>
                     </label>
 
                     <p class="campo-erro" id="mira-erro" aria-live="polite"></p>
@@ -150,12 +140,11 @@
         </div>
     </footer>
 
-    <script src="script.js?v=6"></script>
-    <script src="reticula.js?v=6"></script>
-    <script src="miras-data.js?v=6"></script>
-    <script src="miras.js?v=6"></script>
-    <script src="editor.js?v=6"></script>
-    <script src="backup.js?v=6"></script>
+    <script src="script.js?v=7"></script>
+    <script src="reticula.js?v=7"></script>
+    <script src="miras-data.js?v=7"></script>
+    <script src="miras.js?v=7"></script>
+    <script src="editor.js?v=7"></script>
 </body>
 
 </html>

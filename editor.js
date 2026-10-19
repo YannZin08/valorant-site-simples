@@ -1,6 +1,9 @@
 /* ============================================
    EDITOR DE MIRA
    ============================================
+   Abre de três jeitos: "+ Nova mira" (do zero), "Importar" (colar o
+   código da mira que você usa no jogo) e o botão de editar de um card.
+
    Como funciona:
    - estado.secoes guarda o código "aberto" em partes (veja lerSecoes no reticula.js)
    - mexer num controle muda uma chave da mira primária (seção P)
@@ -20,15 +23,24 @@ const caixaControles = document.getElementById('editor-controles');
 const botaoSalvar = document.getElementById('btn-salvar-mira');
 const botaoCopiarCodigo = document.getElementById('btn-copiar-codigo');
 const botaoNovaMira = document.getElementById('btn-nova-mira');
+const botaoImportar = document.getElementById('btn-importar');
+const dicaCodigo = document.getElementById('dica-codigo');
+const dicaPrevia = document.getElementById('previa-dica');
 const botaoCancelar = document.getElementById('btn-cancelar');
 const botaoPadrao = document.getElementById('btn-padrao');
 
 const CODIGO_PADRAO = '0'; // "0" sozinho = mira padrão do jogo
 
+const DICAS = {
+    normal: 'Cole um código do jogo para editar, ou ajuste nos controles abaixo.',
+    importar: 'No Valorant: Configurações → Mira → Exportar. O código vai para a área de transferência; cole aqui (Ctrl+V).',
+};
+
 const estado = {
     secoes: lerSecoes(CODIGO_PADRAO),
     editandoId: null,   // id da sua mira que está sendo editada (null = mira nova)
     codigoValido: true, // false enquanto o campo de código tem um texto inválido
+    importando: false,  // true no modo "Importar": começa sem mira até colar um código
 };
 
 
@@ -248,9 +260,8 @@ function aoDigitarCodigo() {
 
     if (!secoes) {
         estado.codigoValido = false;
-        textoErro.textContent = texto
-            ? 'Esse código não parece ser de uma mira do Valorant.'
-            : 'Cole um código ou ajuste a mira nos controles abaixo.';
+        if (texto) textoErro.textContent = 'Esse código não parece ser de uma mira do Valorant.';
+        else textoErro.textContent = estado.importando ? '' : 'Cole um código ou ajuste a mira nos controles abaixo.';
         atualizarPreviaEditor(); // a prévia continua mostrando a última mira válida
         return;
     }
@@ -258,6 +269,7 @@ function aoDigitarCodigo() {
     estado.secoes = secoes;
     estado.codigoValido = true;
     textoErro.textContent = '';
+    mostrarAjustes(true); // no modo importar, os controles aparecem depois do primeiro código válido
     atualizarControles();
     atualizarPreviaEditor();
 }
@@ -299,8 +311,10 @@ function atualizarControles(origem) {
 
 function atualizarPreviaEditor() {
     // O canvas guarda o código: assim ele também redesenha quando muda fundo/zoom (miras.js)
-    canvasPrevia.dataset.codigo = escreverCodigo(estado.secoes);
-    desenharMira(canvasPrevia, montarMira(estado.secoes.P), visual);
+    const semMira = caixaControles.hidden; // modo importar, ainda sem código colado
+    canvasPrevia.dataset.codigo = semMira ? '' : escreverCodigo(estado.secoes);
+    desenharMira(canvasPrevia, semMira ? null : montarMira(estado.secoes.P), visual);
+    dicaPrevia.hidden = !semMira;
 
     canvasPrevia.parentElement.classList.toggle('travada', estado.codigoValido); // visor fecha na mira
     botaoSalvar.disabled = !estado.codigoValido;
@@ -323,21 +337,58 @@ function abrirEditor(item = null) {
     estado.editandoId = ehSua ? item.id : null;
     estado.secoes = (item && lerSecoes(item.codigo)) || lerSecoes(CODIGO_PADRAO);
 
+    estado.importando = false;
     campoNome.value = !item ? '' : ehSua ? item.nome : `${item.nome} (editada)`;
     tituloEditor.textContent = ehSua ? 'Editar mira' : 'Nova mira';
     botaoSalvar.textContent = ehSua ? 'Salvar alterações' : 'Salvar na lista';
+    dicaCodigo.textContent = DICAS.normal;
+    mostrarAjustes(true);
 
-    form.hidden = false; // primeiro aparece (o canvas só tem tamanho visível)...
-    botaoNovaMira.setAttribute('aria-expanded', 'true');
-    depoisDeMudar();     // ...depois escreve o código, posiciona os controles e desenha
+    mostrarFormulario(botaoNovaMira); // primeiro aparece (o canvas só tem tamanho visível)...
+    depoisDeMudar();                  // ...depois escreve o código, posiciona os controles e desenha
 
     if (item) form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/** Modo "Importar": trazer a mira que a pessoa já usa no jogo, colando o código */
+function abrirImportar() {
+    estado.editandoId = null;
+    estado.importando = true;
+    estado.secoes = lerSecoes(CODIGO_PADRAO);
+    estado.codigoValido = false; // "Salvar" só libera depois de colar um código válido
+
+    campoNome.value = '';
+    campoCodigo.value = '';
+    textoErro.textContent = '';
+    tituloEditor.textContent = 'Importar mira';
+    botaoSalvar.textContent = 'Salvar na lista';
+    dicaCodigo.textContent = DICAS.importar;
+    mostrarAjustes(false);
+
+    mostrarFormulario(botaoImportar);
+    atualizarPreviaEditor();
+    campoCodigo.focus();
+}
+
+// Mostra o painel e marca qual botão abriu (para leitores de tela)
+function mostrarFormulario(botaoQueAbriu) {
+    form.hidden = false;
+    botaoNovaMira.setAttribute('aria-expanded', String(botaoQueAbriu === botaoNovaMira));
+    botaoImportar.setAttribute('aria-expanded', String(botaoQueAbriu === botaoImportar));
+}
+
+// Sliders e "Voltar ao padrão": escondidos no modo importar até colar um código
+function mostrarAjustes(mostrar) {
+    caixaControles.hidden = !mostrar;
+    botaoPadrao.hidden = !mostrar;
 }
 
 function fecharEditor() {
     form.hidden = true;
     botaoNovaMira.setAttribute('aria-expanded', 'false');
+    botaoImportar.setAttribute('aria-expanded', 'false');
     estado.editandoId = null;
+    estado.importando = false;
     textoErro.textContent = '';
 }
 
@@ -384,7 +435,14 @@ criarControles();
 
 campoCodigo.addEventListener('input', aoDigitarCodigo);
 form.addEventListener('submit', salvarMira);
-botaoNovaMira.addEventListener('click', () => (form.hidden ? abrirEditor() : fecharEditor()));
+botaoNovaMira.addEventListener('click', () => {
+    const aberto = !form.hidden && !estado.importando;
+    aberto ? fecharEditor() : abrirEditor();
+});
+botaoImportar.addEventListener('click', () => {
+    const aberto = !form.hidden && estado.importando;
+    aberto ? fecharEditor() : abrirImportar();
+});
 botaoCancelar.addEventListener('click', fecharEditor);
 botaoCopiarCodigo.addEventListener('click', () => copiarTexto(escreverCodigo(estado.secoes), botaoCopiarCodigo));
 
