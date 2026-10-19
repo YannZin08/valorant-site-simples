@@ -42,6 +42,7 @@
    ========================================================= */
 
 :root {
+    color-scheme: dark; /* sliders, caixas e seletor de cor nativos no tema escuro */
     --cor-fundo: #0a0f1d;
     --cor-painel: #0f1729;
     --cor-painel-2: #141e35;
@@ -334,6 +335,11 @@ textarea {
 }
 
 /* estado depois de copiar (a classe é colocada pelo script.js) */
+.botao.falhou {
+    border-color: var(--cor-erro);
+    color: var(--cor-erro);
+}
+
 .botao.copied {
     background: var(--cor-sucesso);
     border-color: var(--cor-sucesso);
@@ -382,6 +388,12 @@ textarea {
     flex-wrap: wrap;
     gap: 20px;
     margin-bottom: 24px;
+}
+
+.barra-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .controles {
@@ -612,10 +624,6 @@ textarea {
     gap: 4px;
 }
 
-.codigo-oculto {
-    display: none;
-}
-
 .mira-nova {
     animation: miraNova 1.6s ease-out;
 }
@@ -630,48 +638,62 @@ textarea {
     }
 }
 
-/* ---------- Formulário "Nova mira" ---------- */
+/* ---------- Aviso do backup (importar/exportar) ---------- */
 
-.nova-mira {
-    display: grid;
-    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-    margin-bottom: 28px;
-    overflow: hidden;
+.aviso {
+    margin-bottom: 20px;
+    padding: 10px 14px;
+    background: var(--cor-destaque-fundo);
+    border: 1px solid rgba(34, 211, 238, 0.35);
+    border-radius: var(--raio-pequeno);
+    font-size: 0.9rem;
 }
 
-.nova-mira:hover {
+.aviso-erro {
+    background: rgba(248, 113, 113, 0.1);
+    border-color: rgba(248, 113, 113, 0.4);
+}
+
+/* ---------- Editor de mira ---------- */
+
+.editor {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 10px;
+    margin-bottom: 28px;
+    padding: 10px;
+}
+
+.editor:hover {
     background: var(--cor-painel);
     border-color: var(--cor-linha);
 }
 
-.nova-mira-previa {
-    min-height: 300px;
-    border-radius: 0;
+/* A prévia "gruda" no topo enquanto você rola pelos controles */
+.editor-previa {
+    position: sticky;
+    top: calc(var(--altura-cabecalho) + 16px);
+    z-index: 2;
+    align-self: start;
+    aspect-ratio: 16 / 10;
 }
 
-.previa-dica {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    font-family: var(--fonte-mono);
-    font-size: 0.85rem;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.8);
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    pointer-events: none;
-}
-
-.nova-mira-campos {
+.editor-campos {
     display: flex;
     flex-direction: column;
     gap: 14px;
-    padding: 28px;
+    min-width: 0;
+    padding: 12px 14px 8px;
 }
 
-.nova-mira-campos h2 {
+.editor-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.editor-topo h2 {
     font-family: var(--fonte-display);
     font-size: 2rem;
     font-weight: 700;
@@ -695,7 +717,8 @@ textarea {
 }
 
 .campo input,
-.campo textarea {
+.campo textarea,
+.campo-hex input {
     width: 100%;
     padding: 10px 12px;
     background: var(--cor-campo);
@@ -707,28 +730,217 @@ textarea {
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.campo textarea {
+.campo textarea,
+.campo-hex input {
     font-family: var(--fonte-mono);
     font-size: 0.82rem;
 }
 
 .campo input:focus,
-.campo textarea:focus {
+.campo textarea:focus,
+.campo-hex input:focus {
     outline: none;
     border-color: var(--cor-destaque);
     box-shadow: 0 0 0 3px rgba(34, 211, 238, 0.15);
 }
 
 .campo-erro {
-    min-height: 1.2em;
     font-size: 0.85rem;
     color: var(--cor-erro);
 }
 
-.nova-mira-botoes {
+.campo-erro:empty {
+    display: none;
+}
+
+/* Grupos: Cor, Contorno, Ponto central, Linhas internas, Linhas externas */
+.editor-controles {
     display: flex;
+    flex-direction: column;
+}
+
+.editor-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 0;
+    border-top: 1px solid var(--cor-linha);
+}
+
+.editor-grupo-topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.editor-grupo h3 {
+    font-family: var(--fonte-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--cor-texto);
+}
+
+.editor-grupo-corpo {
+    display: flex;
+    flex-direction: column;
     gap: 10px;
-    margin-top: auto;
+}
+
+/* Linha de slider: nome | slider | valor */
+.ajuste {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr) 2.75rem;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.88rem;
+}
+
+.ajuste label {
+    color: var(--cor-suave);
+}
+
+.ajuste input[type="range"] {
+    width: 100%;
+    accent-color: var(--cor-destaque);
+    cursor: pointer;
+}
+
+.ajuste output {
+    font-family: var(--fonte-mono);
+    font-size: 0.82rem;
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+}
+
+/* Liga/desliga com cara de interruptor */
+.editor-opcoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+}
+
+.opcao {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--cor-suave);
+    cursor: pointer;
+}
+
+.opcao input {
+    position: relative;
+    flex-shrink: 0;
+    width: 34px;
+    height: 20px;
+    background: var(--cor-linha-forte);
+    border-radius: 999px;
+    appearance: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.opcao input::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 14px;
+    height: 14px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+}
+
+.opcao input:checked {
+    background: var(--cor-destaque);
+}
+
+.opcao input:checked::after {
+    transform: translateX(14px);
+}
+
+.opcao input:focus-visible {
+    outline: 2px solid var(--cor-destaque);
+    outline-offset: 2px;
+}
+
+/* Cores: 8 amostras do jogo + a personalizada */
+.cores {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.cor-opcao {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    background: var(--amostra);
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.cor-opcao[aria-pressed="true"],
+.cor-personalizada.ativa {
+    outline: 2px solid var(--cor-destaque);
+    outline-offset: 2px;
+}
+
+.cor-personalizada {
+    background: conic-gradient(red, yellow, lime, cyan, blue, magenta, red);
+    appearance: none;
+}
+
+.cor-personalizada::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.cor-personalizada::-webkit-color-swatch {
+    border: 0;
+    border-radius: 50%;
+}
+
+.cor-personalizada::-moz-color-swatch {
+    border: 0;
+    border-radius: 50%;
+}
+
+.campo-hex {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--cor-suave);
+}
+
+.campo-hex input {
+    width: 7.5rem;
+    padding: 7px 10px;
+    text-transform: uppercase;
+}
+
+.editor-botoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid var(--cor-linha);
+}
+
+/* Texto só para leitores de tela (o nome do interruptor de cada grupo) */
+.so-leitor {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
 
 
@@ -966,12 +1178,20 @@ textarea {
 }
 
 @media (max-width: 768px) {
-    .nova-mira {
+    .editor {
         grid-template-columns: 1fr;
     }
 
-    .nova-mira-previa {
-        min-height: 220px;
+    /* no celular a prévia fica em cima e continua grudada enquanto rola */
+    .editor-previa {
+        top: calc(var(--altura-cabecalho) + 8px);
+        aspect-ratio: 16 / 9;
+        /* 1ª sombra: faixa da cor do painel que tapa o vão entre o cabeçalho e a prévia */
+        box-shadow: 0 -10px 0 var(--cor-painel), 0 10px 20px rgba(5, 9, 20, 0.6);
+    }
+
+    .editor-campos {
+        padding: 8px 6px 4px;
     }
 
     .grade-4 {
@@ -992,8 +1212,21 @@ textarea {
         grid-template-columns: 1fr;
     }
 
-    .barra .botao-primario {
+    /* "+ Nova mira" em cima, ocupando a largura; Importar e Exportar embaixo */
+    .barra-acoes {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
         width: 100%;
+    }
+
+    .barra-acoes .botao-primario {
+        grid-column: 1 / -1;
+        order: -1;
+    }
+
+    .ajuste {
+        grid-template-columns: 6.25rem minmax(0, 1fr) 2.5rem;
+        gap: 10px;
     }
 }
 

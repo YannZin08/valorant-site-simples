@@ -1,7 +1,7 @@
 /* ============================================
    PÁGINA DE MIRAS
-   Monta os cards, a prévia do formulário e salva
-   as miras adicionadas no navegador (localStorage).
+   Monta os cards e guarda as suas miras no navegador (localStorage).
+   O editor fica no editor.js e o backup no backup.js.
    ============================================ */
 
 const CHAVE_MINHAS_MIRAS = 'valorant-minhas-miras';
@@ -12,15 +12,6 @@ const visual = { fundo: 'parede', zoom: 2 };
 const ZOOMS = [2, 4];
 
 const grid = document.getElementById('miras-grid');
-const form = document.getElementById('form-mira');
-const campoNome = document.getElementById('mira-nome');
-const campoCodigo = document.getElementById('mira-codigo');
-const textoErro = document.getElementById('mira-erro');
-const botaoAdicionar = document.getElementById('btn-adicionar');
-const canvasPrevia = document.getElementById('previa-mira');
-const dicaPrevia = document.getElementById('previa-dica');
-const botaoNovaMira = document.getElementById('btn-nova-mira');
-const botaoCancelar = document.getElementById('btn-cancelar');
 
 
 /* ============================================
@@ -31,7 +22,8 @@ const botaoCancelar = document.getElementById('btn-cancelar');
 
 function carregarMinhasMiras() {
     try {
-        return JSON.parse(localStorage.getItem(CHAVE_MINHAS_MIRAS)) || [];
+        const lista = JSON.parse(localStorage.getItem(CHAVE_MINHAS_MIRAS));
+        return Array.isArray(lista) ? lista : [];
     } catch {
         return [];
     }
@@ -44,6 +36,13 @@ function salvarMinhasMiras(lista) {
     } catch {
         return false;
     }
+}
+
+/** true se já existe uma mira com esse código (ignora a mira com o id informado) */
+function miraJaExiste(codigo, ignorarId = null) {
+    const procurado = codigoCanonico(codigo);
+    return [...MIRAS_FIXAS, ...carregarMinhasMiras()]
+        .some(mira => mira.id !== ignorarId && codigoCanonico(mira.codigo) === procurado);
 }
 
 
@@ -75,6 +74,25 @@ const ICONE_LIXEIRA = `
         <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6M10 11v6M14 11v6" />
     </svg>`;
 
+// Ícone de "ajustes" (três controles deslizantes)
+const ICONE_EDITAR = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 6h10M18 6h2M4 12h4M12 12h8M4 18h12" />
+        <circle cx="16" cy="6" r="2" /><circle cx="10" cy="12" r="2" /><circle cx="18" cy="18" r="2" />
+    </svg>`;
+
+function criarBotaoIcone(icone, titulo, aoClicar) {
+    const botao = document.createElement('button');
+    botao.type = 'button';
+    botao.className = 'botao botao-fantasma botao-pequeno botao-icone';
+    botao.title = titulo;
+    botao.setAttribute('aria-label', titulo);
+    botao.innerHTML = icone;
+    botao.addEventListener('click', aoClicar);
+    return botao;
+}
+
 function criarCard(item) {
     const card = document.createElement('div');
     card.className = 'cartao mira-card';
@@ -87,18 +105,24 @@ function criarCard(item) {
                 <h3 class="mira-nome"></h3>
             </div>
             <div class="mira-acoes">
-                <code class="codigo-oculto"></code>
-                <button type="button" class="botao botao-secundario botao-pequeno" onclick="copiarID(this)">Copiar</button>
+                <button type="button" class="botao botao-secundario botao-pequeno">Copiar</button>
             </div>
         </div>
     `;
+    if (item.doNavegador) card.dataset.id = item.id;
 
     // textContent (e não innerHTML) para o nome: assim ninguém injeta HTML pelo formulário
     const nome = card.querySelector('.mira-nome');
     nome.textContent = item.nome;
     nome.title = item.nome; // nome completo aparece ao passar o mouse, se for cortado
-    card.querySelector('code').textContent = item.codigo;
     card.querySelector('canvas').dataset.codigo = item.codigo;
+
+    const acoes = card.querySelector('.mira-acoes');
+    const botaoCopiar = acoes.querySelector('button');
+    botaoCopiar.addEventListener('click', () => copiarTexto(item.codigo, botaoCopiar));
+
+    // Editar: abre o editor com essa mira (abrirEditor fica no editor.js)
+    acoes.prepend(criarBotaoIcone(ICONE_EDITAR, `Editar ${item.nome}`, () => abrirEditor(item)));
 
     // Miras do navegador ganham selo e botão de excluir
     if (item.doNavegador) {
@@ -107,14 +131,7 @@ function criarCard(item) {
         selo.textContent = 'Sua';
         card.querySelector('.mira-info').appendChild(selo);
 
-        const botaoExcluir = document.createElement('button');
-        botaoExcluir.type = 'button';
-        botaoExcluir.className = 'botao botao-fantasma botao-pequeno botao-icone';
-        botaoExcluir.title = 'Excluir mira';
-        botaoExcluir.setAttribute('aria-label', `Excluir ${item.nome}`);
-        botaoExcluir.innerHTML = ICONE_LIXEIRA;
-        botaoExcluir.addEventListener('click', () => excluirMira(item.id, item.nome));
-        card.querySelector('.mira-acoes').prepend(botaoExcluir);
+        acoes.prepend(criarBotaoIcone(ICONE_LIXEIRA, `Excluir ${item.nome}`, () => excluirMira(item.id, item.nome)));
     }
 
     return card;
@@ -127,75 +144,12 @@ function excluirMira(id, nome) {
     renderizarMiras();
 }
 
-
-/* ============================================
-   FORMULÁRIO + PRÉVIA AO VIVO
-   ============================================ */
-
-// Tira espaços e quebras de linha que vêm junto quando a gente cola o código
-function limparCodigo(codigo) {
-    return codigo.replace(/\s+/g, '');
-}
-
-function atualizarPrevia() {
-    const codigo = limparCodigo(campoCodigo.value);
-    const mira = codigo ? lerCodigoMira(codigo) : null;
-
-    canvasPrevia.dataset.codigo = mira ? codigo : '';
-    desenharMira(canvasPrevia, mira, visual);
-
-    dicaPrevia.hidden = Boolean(mira);
-    canvasPrevia.parentElement.classList.toggle('travada', Boolean(mira)); // visor fecha na mira
-    botaoAdicionar.disabled = !mira;
-    textoErro.textContent = codigo && !mira
-        ? 'Esse código não parece ser de uma mira do Valorant.'
-        : '';
-}
-
-function adicionarMira(evento) {
-    evento.preventDefault(); // não recarrega a página
-
-    const codigo = limparCodigo(campoCodigo.value);
-    if (!lerCodigoMira(codigo)) return;
-
-    const minhas = carregarMinhasMiras();
-    const jaExiste = [...MIRAS_FIXAS, ...minhas].some(mira => limparCodigo(mira.codigo) === codigo);
-    if (jaExiste) {
-        textoErro.textContent = 'Essa mira já está na lista.';
-        return;
-    }
-
-    const nome = campoNome.value.trim() || `Mira ${MIRAS_FIXAS.length + minhas.length + 1}`;
-    minhas.push({ id: Date.now(), nome, codigo });
-
-    if (!salvarMinhasMiras(minhas)) {
-        textoErro.textContent = 'Não consegui salvar no navegador (ele pode estar bloqueando o armazenamento).';
-        return;
-    }
-
-    fecharFormulario();
-    renderizarMiras();
-
-    // Dá um destaque na mira nova (ela é a primeira do grid)
-    const cardNovo = grid.firstElementChild;
-    cardNovo.classList.add('mira-nova');
-    cardNovo.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-
-
-// Abrir e fechar o painel "Nova mira"
-function abrirFormulario() {
-    form.hidden = false;
-    botaoNovaMira.setAttribute('aria-expanded', 'true');
-    atualizarPrevia(); // o canvas só tem tamanho depois que aparece
-    campoCodigo.focus();
-}
-
-function fecharFormulario() {
-    form.reset();
-    form.hidden = true;
-    botaoNovaMira.setAttribute('aria-expanded', 'false');
-    atualizarPrevia();
+// Dá um destaque rápido num card (depois de salvar ou importar)
+function destacarMira(id) {
+    const card = id !== undefined ? grid.querySelector(`[data-id="${id}"]`) : grid.firstElementChild;
+    if (!card) return;
+    card.classList.add('mira-nova');
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 
@@ -245,6 +199,7 @@ function carregarVisual() {
    REDESENHAR
    Cada <canvas> guarda o próprio código em data-codigo,
    então dá pra redesenhar tudo quando muda fundo, zoom ou tamanho da tela.
+   (Inclui a prévia do editor.)
    ============================================ */
 
 function redesenharTudo() {
@@ -269,12 +224,4 @@ carregarVisual();
 marcarAtivos();
 configurarOpcoes('opcoes-fundo', 'fundo', fundo => mudarVisual({ fundo }));
 configurarOpcoes('opcoes-zoom', 'zoom', zoom => mudarVisual({ zoom: Number(zoom) }));
-
-campoCodigo.addEventListener('input', atualizarPrevia);
-form.addEventListener('submit', adicionarMira);
-botaoNovaMira.addEventListener('click', () => (form.hidden ? abrirFormulario() : fecharFormulario()));
-botaoCancelar.addEventListener('click', fecharFormulario);
-
-canvasPrevia.dataset.codigo = '';
 renderizarMiras();
-atualizarPrevia();

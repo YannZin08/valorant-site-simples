@@ -1,5 +1,5 @@
 /* ============================================
-   RETÍCULA — lê o código de mira do Valorant
+   RETÍCULA — lê e escreve o código de mira do Valorant
    e desenha a mira dentro de um <canvas>
    ============================================
 
@@ -30,9 +30,25 @@ const CORES_JOGO = [
 ];
 const COR_PERSONALIZADA = 8; // "c;8" = usa a cor do "u;RRGGBBAA"
 
-// Valores padrão das linhas (são os da mira padrão do jogo)
-const PADRAO_INTERNAS = { opacidade: 0.8, comprimento: 6, espessura: 2, distancia: 3 };
-const PADRAO_EXTERNAS = { opacidade: 0.35, comprimento: 2, espessura: 2, distancia: 10 };
+// Valor padrão de cada chave da mira primária (é a mira padrão do jogo).
+// Chave que NÃO aparece no código = usa o valor daqui.
+const PADROES_P = {
+    c: 0, u: 'FFFFFFFF',                 // cor e cor personalizada
+    h: 1, t: 1, o: 0.5,                  // contorno: ligado, espessura, opacidade
+    d: 0, z: 2, a: 1,                    // ponto central: ligado, espessura, opacidade
+    // linhas internas (0) e externas (1):
+    // b = ligadas, a = opacidade, l = comprimento, v = vertical, g = vertical separado,
+    // t = espessura, o = distância, m = erro de movimento, f = erro de disparo
+    '0b': 1, '0a': 0.8, '0l': 6, '0v': 6, '0g': 0, '0t': 2, '0o': 3, '0m': 0, '0f': 1,
+    '1b': 1, '1a': 0.35, '1l': 2, '1v': 2, '1g': 0, '1t': 2, '1o': 10, '1m': 1, '1f': 1,
+};
+
+// Ordem em que o jogo escreve as chaves (o editor segue a mesma)
+const ORDEM_CHAVES = [
+    'c', 'u', 'h', 't', 'o', 'd', 'b', 'z', 'a', 'f', 's', 'm',
+    '0b', '0t', '0l', '0v', '0g', '0o', '0a', '0m', '0f', '0s', '0e',
+    '1b', '1t', '1l', '1v', '1g', '1o', '1a', '1m', '1f', '1s', '1e',
+];
 
 
 /* ============================================
@@ -40,10 +56,11 @@ const PADRAO_EXTERNAS = { opacidade: 0.35, comprimento: 2, espessura: 2, distanc
    ============================================ */
 
 /**
- * Transforma o texto do código em um objeto com as configurações da mira primária.
+ * Separa o código nas seções: geral, P (primária), A (ADS) e S (sniper).
+ * Cada seção vira um objeto { chave: 'valor' }, com o valor em texto.
  * Retorna null se o código for inválido.
  */
-function lerCodigoMira(codigo) {
+function lerSecoes(codigo) {
     const partes = String(codigo).replace(/\s+/g, '').split(';');
     if (partes[partes.length - 1] === '') partes.pop(); // aceita ";" sobrando no final
 
@@ -69,7 +86,13 @@ function lerCodigoMira(codigo) {
         i++; // pula o valor, que já foi lido
     }
 
-    return montarMira(secoes.P);
+    return secoes;
+}
+
+/** Lê o código e devolve as configurações da mira primária (ou null se for inválido) */
+function lerCodigoMira(codigo) {
+    const secoes = lerSecoes(codigo);
+    return secoes ? montarMira(secoes.P) : null;
 }
 
 // Chaves são uma letra minúscula, às vezes com 0 ou 1 na frente (ex.: "c", "0l", "1b")
@@ -84,16 +107,20 @@ function valorValido(chave, valor) {
     return /^-?\d*\.?\d+$/.test(valor);
 }
 
+// Valor de uma chave da seção P: o que está no código ou o padrão do jogo
+function valorDaChave(p, chave) {
+    return p[chave] !== undefined ? Number(p[chave]) : PADROES_P[chave];
+}
+
 function montarMira(p) {
-    // Helpers: pegam o valor do código ou usam o padrão
-    const numero = (chave, padrao) => (p[chave] !== undefined ? Number(p[chave]) : padrao);
-    const ligado = (chave, padrao) => (p[chave] !== undefined ? p[chave] === '1' : padrao);
+    const numero = chave => valorDaChave(p, chave);
+    const ligado = chave => numero(chave) === 1;
 
     // Cor: "c;N" escolhe uma cor pronta; "c;8" usa a personalizada do "u"
-    const indiceCor = numero('c', 0);
+    const indiceCor = numero('c');
     let cor;
-    if (indiceCor === COR_PERSONALIZADA && p.u) {
-        cor = { nome: 'Personalizada', ...hexParaRgb(p.u) };
+    if (indiceCor === COR_PERSONALIZADA) {
+        cor = { nome: 'Personalizada', ...hexParaRgb(p.u || PADROES_P.u) };
     } else {
         const corJogo = CORES_JOGO[indiceCor] || CORES_JOGO[0];
         cor = { nome: corJogo.nome, ...hexParaRgb(corJogo.hex) };
@@ -101,34 +128,26 @@ function montarMira(p) {
 
     return {
         cor,
-        contorno: {
-            ligado: ligado('h', true),
-            espessura: numero('t', 1),
-            opacidade: numero('o', 0.5),
-        },
-        ponto: {
-            ligado: ligado('d', false),
-            tamanho: numero('z', 2),
-            opacidade: numero('a', 1),
-        },
-        internas: lerLinhas(numero, ligado, '0', PADRAO_INTERNAS),
-        externas: lerLinhas(numero, ligado, '1', PADRAO_EXTERNAS),
+        contorno: { ligado: ligado('h'), espessura: numero('t'), opacidade: numero('o') },
+        ponto: { ligado: ligado('d'), tamanho: numero('z'), opacidade: numero('a') },
+        internas: lerLinhas(numero, ligado, '0'),
+        externas: lerLinhas(numero, ligado, '1'),
     };
 }
 
 // Linhas internas usam o prefixo "0" e externas o prefixo "1"
-function lerLinhas(numero, ligado, prefixo, padrao) {
-    const comprimento = numero(prefixo + 'l', padrao.comprimento);
+function lerLinhas(numero, ligado, prefixo) {
+    const comprimento = numero(prefixo + 'l');
     // "g;1" = comprimento vertical separado do horizontal (cadeado aberto no jogo)
-    const verticalSeparado = ligado(prefixo + 'g', false);
+    const verticalSeparado = ligado(prefixo + 'g');
 
     return {
-        ligado: ligado(prefixo + 'b', true),
-        opacidade: numero(prefixo + 'a', padrao.opacidade),
+        ligado: ligado(prefixo + 'b'),
+        opacidade: numero(prefixo + 'a'),
         comprimento,
-        comprimentoVertical: verticalSeparado ? numero(prefixo + 'v', comprimento) : comprimento,
-        espessura: numero(prefixo + 't', padrao.espessura),
-        distancia: numero(prefixo + 'o', padrao.distancia),
+        comprimentoVertical: verticalSeparado ? numero(prefixo + 'v') : comprimento,
+        espessura: numero(prefixo + 't'),
+        distancia: numero(prefixo + 'o'),
     };
 }
 
@@ -145,7 +164,60 @@ function hexParaRgb(hex) {
 
 
 /* ============================================
-   2) TRANSFORMAR A MIRA EM RETÂNGULOS
+   2) ESCREVER O CÓDIGO (caminho inverso, usado pelo editor)
+   ============================================ */
+
+// 0.80000001 -> "0.8"; 6 -> "6"
+function formatarNumero(valor) {
+    return String(Number(Number(valor).toFixed(3)));
+}
+
+/**
+ * Muda uma chave da mira primária (seção P).
+ * Se o valor for o padrão do jogo, a chave sai do código — o jogo faz igual.
+ */
+function definirChave(p, chave, valor) {
+    const texto = chave === 'u' ? String(valor).toUpperCase() : formatarNumero(valor);
+    const ehPadrao = chave === 'u' ? texto === PADROES_P.u : Number(texto) === PADROES_P[chave];
+    if (ehPadrao) delete p[chave];
+    else p[chave] = texto;
+}
+
+/** Junta as seções de volta no texto do código, na ordem que o jogo usa */
+function escreverCodigo(secoes) {
+    const partes = ['0'];
+    const posicao = chave => {
+        const indice = ORDEM_CHAVES.indexOf(chave);
+        return indice === -1 ? ORDEM_CHAVES.length : indice; // chave desconhecida vai pro fim
+    };
+    const adicionar = (secao, ordenar) => {
+        const chaves = Object.keys(secao);
+        if (ordenar) chaves.sort((x, y) => posicao(x) - posicao(y));
+        chaves.forEach(chave => partes.push(chave, secao[chave]));
+    };
+
+    adicionar(secoes.geral, false);
+    ['P', 'A', 'S'].forEach(nome => {
+        if (Object.keys(secoes[nome]).length === 0) return; // seção vazia não aparece
+        partes.push(nome);
+        // Só a P (que o editor muda) é reordenada; A e S ficam como vieram
+        adicionar(secoes[nome], nome === 'P');
+    });
+    return partes.join(';');
+}
+
+/**
+ * Versão "arrumada" do código, para comparar duas miras
+ * (ignora espaços e a ordem das chaves). Retorna null se for inválido.
+ */
+function codigoCanonico(codigo) {
+    const secoes = lerSecoes(codigo);
+    return secoes ? escreverCodigo(secoes) : null;
+}
+
+
+/* ============================================
+   3) TRANSFORMAR A MIRA EM RETÂNGULOS
    ============================================
    Toda mira do Valorant é feita só de retângulos:
    4 braços internos, 4 externos e o ponto do meio.
@@ -184,7 +256,7 @@ function montarPecas(mira) {
 
 
 /* ============================================
-   3) DESENHAR NO CANVAS
+   4) DESENHAR NO CANVAS
    ============================================ */
 
 /**
@@ -250,7 +322,7 @@ function desenharMira(canvas, mira, opcoes = {}) {
 
 
 /* ============================================
-   4) FUNDOS "DE JOGO"
+   5) FUNDOS "DE JOGO"
    ============================================ */
 
 const FUNDOS = {

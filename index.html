@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Miras · Valorant Hub</title>
     <meta name="description" content="Miras do Valorant com prévia de como ficam no jogo e código para copiar.">
-    <!-- "?v=4": mude o número quando alterar o CSS/JS, assim o navegador baixa a versão nova -->
-    <link rel="stylesheet" href="style.css?v=4">
+    <!-- "?v=5": mude o número quando alterar o CSS/JS, assim o navegador baixa a versão nova -->
+    <link rel="stylesheet" href="style.css?v=5">
 </head>
 
 <body>
@@ -62,19 +62,45 @@
                     </div>
                 </div>
 
-                <button type="button" class="botao botao-primario" id="btn-nova-mira" aria-expanded="false"
-                    aria-controls="form-mira">+ Nova mira</button>
+                <!-- Backup e criar mira -->
+                <div class="barra-acoes">
+                    <button type="button" class="botao botao-fantasma" id="btn-importar"
+                        title="Carregar miras de um arquivo de backup">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 15V3M7 8l5-5 5 5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
+                        </svg>
+                        Importar
+                    </button>
+                    <button type="button" class="botao botao-fantasma" id="btn-exportar"
+                        title="Baixar suas miras num arquivo de backup">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 3v12M7 10l5 5 5-5M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4" />
+                        </svg>
+                        Exportar
+                    </button>
+                    <button type="button" class="botao botao-primario" id="btn-nova-mira" aria-expanded="false"
+                        aria-controls="form-mira">+ Nova mira</button>
+                    <input type="file" id="arquivo-backup" accept=".json,.txt,application/json,text/plain" hidden>
+                </div>
             </div>
 
-            <!-- Formulário (fica escondido até clicar em "+ Nova mira") -->
-            <form class="cartao nova-mira" id="form-mira" autocomplete="off" hidden>
-                <div class="mira-preview nova-mira-previa">
+            <!-- Resultado do importar/exportar -->
+            <p class="aviso" id="aviso-miras" role="status" hidden></p>
+
+            <!-- EDITOR (fica escondido até clicar em "+ Nova mira" ou no botão de editar de um card) -->
+            <form class="cartao editor" id="form-mira" autocomplete="off" hidden>
+                <div class="mira-preview editor-previa">
                     <canvas id="previa-mira"></canvas>
-                    <span class="previa-dica" id="previa-dica">Cole um código para ver a mira aqui</span>
                 </div>
 
-                <div class="nova-mira-campos">
-                    <h2>Nova mira</h2>
+                <div class="editor-campos">
+                    <div class="editor-topo">
+                        <h2 id="editor-titulo">Nova mira</h2>
+                        <button type="button" class="botao botao-fantasma botao-pequeno" id="btn-padrao">Voltar ao
+                            padrão</button>
+                    </div>
 
                     <label class="campo">
                         <span>Nome <small>(opcional)</small></span>
@@ -83,15 +109,20 @@
 
                     <label class="campo">
                         <span>Código da mira</span>
-                        <textarea id="mira-codigo" rows="3"
-                            placeholder="Cole o código exportado no jogo (Configurações → Mira → Exportar)"></textarea>
+                        <textarea id="mira-codigo" rows="2" spellcheck="false"></textarea>
+                        <small>Cole um código do jogo para editar, ou ajuste nos controles abaixo.</small>
                     </label>
 
                     <p class="campo-erro" id="mira-erro" aria-live="polite"></p>
 
-                    <div class="nova-mira-botoes">
-                        <button type="submit" class="botao botao-primario" id="btn-adicionar" disabled>Adicionar
-                            mira</button>
+                    <!-- Cor, contorno, ponto e linhas: criados pelo editor.js -->
+                    <div class="editor-controles" id="editor-controles"></div>
+
+                    <div class="editor-botoes">
+                        <button type="submit" class="botao botao-primario" id="btn-salvar-mira">Salvar na
+                            lista</button>
+                        <button type="button" class="botao botao-secundario" id="btn-copiar-codigo">Copiar
+                            código</button>
                         <button type="button" class="botao botao-fantasma" id="btn-cancelar">Cancelar</button>
                     </div>
                 </div>
@@ -110,10 +141,12 @@
         </div>
     </footer>
 
-    <script src="script.js?v=4"></script>
-    <script src="reticula.js?v=4"></script>
-    <script src="miras-data.js?v=4"></script>
-    <script src="miras.js?v=4"></script>
+    <script src="script.js?v=5"></script>
+    <script src="reticula.js?v=5"></script>
+    <script src="miras-data.js?v=5"></script>
+    <script src="miras.js?v=5"></script>
+    <script src="editor.js?v=5"></script>
+    <script src="backup.js?v=5"></script>
 </body>
 
 </html>
