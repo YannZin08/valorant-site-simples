@@ -45,12 +45,12 @@ const METAS = {
     },
 };
 
-// Funções, na ordem em que aparecem no quadro
+// Nome de cada função (aparece em cima do nome do agente)
 const FUNCOES = {
-    duelista: 'Duelistas',
-    iniciador: 'Iniciadores',
-    controlador: 'Controladores',
-    sentinela: 'Sentinelas',
+    duelista: 'Duelista',
+    iniciador: 'Iniciador',
+    controlador: 'Controlador',
+    sentinela: 'Sentinela',
 };
 
 // Nome que aparece na tela, imagem e função de cada agente
