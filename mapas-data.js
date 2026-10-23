@@ -1,23 +1,22 @@
 /* ============================================
-   MAPAS E MELHORES AGENTES
+   MAPAS E META DOS AGENTES
    ============================================
    Quando o meta mudar, é só mexer neste arquivo:
    - ROTACAO: dados da rotação competitiva atual
-   - METAS: de onde vem cada tipo de meta (ranqueada e profissional)
+   - METAS: regra e fonte de cada meta (ranqueada e profissional)
    - MAPAS: os mapas que aparecem na página, na ordem
    - FORA_DA_ROTACAO: nomes dos mapas que saíram
 
    Em cada mapa:
-   - "ranqueada": os 10 agentes mais escolhidos na ranqueada.
-     "pick" = % de todas as escolhas de agente naquele mapa
-     (ex.: 15 = de cada 100 agentes escolhidos, 15 foram esse).
-     "escolhas" = quantas escolhas de agente entraram na conta.
-   - "pro": agentes mais escolhidos em campeonato.
-     "pick" = % dos times profissionais que escolheram o agente.
-     Use null quando o mapa não teve partidas de campeonato.
+   - "ranqueada.pick": % de TODAS as escolhas de agente no mapa, para
+     cada agente (copie a tabela inteira da fonte). A página soma por
+     função e mostra a fatia de cada agente dentro da sua função.
+   - "pro.pick": % dos times profissionais que escolheram o agente.
+     Use pro: null quando o mapa não teve campeonato com dados.
 
-   A página separa os agentes por função e mostra, em cada função,
-   os que têm pelo menos "minimo"% (em METAS) — e sempre o 1º da função.
+   Na página, em cada função:
+   - meta = agentes com pelo menos METAS[...].minimo% (sempre o 1º entra)
+   - 2ª opção = o próximo mais escolhido depois do meta
 */
 
 const ROTACAO = {
@@ -26,20 +25,20 @@ const ROTACAO = {
     atualizadoEm: 'outubro de 2026',
 };
 
-// Textos e fontes de cada meta (aparecem embaixo do seletor "Ranqueada | Profissional")
+// Regra e fonte de cada meta (o seletor "Ranqueada | Profissional" usa isto)
 const METAS = {
     ranqueada: {
         rotulo: 'Ranqueada',
-        minimo: 5, // aparece quem tem pelo menos 5% das escolhas no mapa
-        legenda: 'O que os jogadores mais estão escolhendo na ranqueada (todos os elos e regiões), separado por função. A porcentagem é a fatia de todas as escolhas de agente no mapa; aparecem os agentes com pelo menos 5% e sempre o mais escolhido de cada função.',
+        medida: 'funcao', // barra = fatia do agente dentro da função
+        minimo: 20,       // meta = 20% ou mais das escolhas da função
         fonte: 'MetaBot.gg',
         url: 'https://metabot.gg/en/valorant',
         atualizadoEm: '22 de outubro de 2026',
     },
     pro: {
         rotulo: 'Profissional',
-        minimo: 25, // aparece quem foi escolhido por pelo menos 25% dos times
-        legenda: 'O que os times profissionais escolheram nos campeonatos de 2026, separado por função. A porcentagem é quantos times escolheram o agente no mapa; aparecem os agentes com pelo menos 25% e sempre o mais escolhido de cada função.',
+        medida: 'times',  // barra = % dos times que escolheram o agente
+        minimo: 25,       // meta = escolhido por 25% ou mais dos times
         fonte: 'VLR.gg',
         url: 'https://www.vlr.gg/event/agents/2766/valorant-champions-2026',
         atualizadoEm: 'outubro de 2026',
@@ -82,6 +81,7 @@ const AGENTES = {
     veto: { nome: 'Veto', img: 'assets/img-agentes/veto.png', funcao: 'sentinela' },
     viper: { nome: 'Viper', img: 'assets/img-agentes/viper.png', funcao: 'controlador' },
     vyse: { nome: 'Vyse', img: 'assets/img-agentes/vyse.png', funcao: 'sentinela' },
+    miks: { nome: 'Miks', img: null, funcao: 'controlador' }, // sem imagem ainda: aparece a inicial
     waylay: { nome: 'Waylay', img: 'assets/img-agentes/waylay.png', funcao: 'duelista' },
     yoru: { nome: 'Yoru', img: 'assets/img-agentes/yoru.png', funcao: 'duelista' },
 };
@@ -96,31 +96,20 @@ const MAPAS = [
         minimapa: 'assets/img-mapas/Summit_minimap.webp',
         ranqueada: {
             escolhas: 23636,
-            agentes: [
-                { id: 'clove', pick: 15.1 },
-                { id: 'jett', pick: 12.8 },
-                { id: 'fade', pick: 11.9 },
-                { id: 'chamber', pick: 9.3 },
-                { id: 'reyna', pick: 8.5 },
-                { id: 'neon', pick: 7.4 },
-                { id: 'cypher', pick: 5.7 },
-                { id: 'phoenix', pick: 5.5 },
-                { id: 'waylay', pick: 3.7 },
-                { id: 'sage', pick: 2.8 },
-            ],
+            pick: {
+                clove: 15.1, jett: 12.8, fade: 11.9, chamber: 9.3, reyna: 8.5, neon: 7.4,
+                cypher: 5.7, phoenix: 5.5, waylay: 3.7, sage: 2.8, sova: 2.6, omen: 2.5,
+                yoru: 1.7, raze: 1.3, vyse: 1.2, skye: 1.1, iso: 1.1, deadlock: 0.7,
+                tejo: 0.7, astra: 0.6, veto: 0.6, harbor: 0.5, killjoy: 0.5, gekko: 0.4,
+                miks: 0.4, kayo: 0.4, viper: 0.3, brimstone: 0.3, breach: 0.2,
+            },
         },
         pro: {
             fonte: 'Champions 2026',
-            agentes: [
-                { id: 'neon', pick: 82 },
-                { id: 'fade', pick: 82 },
-                { id: 'chamber', pick: 68 },
-                { id: 'sage', pick: 53 },
-                { id: 'harbor', pick: 44 },
-                { id: 'omen', pick: 41 },
-                { id: 'cypher', pick: 21 },
-                { id: 'phoenix', pick: 18 },
-            ],
+            pick: {
+                neon: 82, fade: 82, chamber: 68, sage: 53,
+                harbor: 44, omen: 41, cypher: 21, phoenix: 18,
+            },
         },
     },
     {
@@ -130,18 +119,13 @@ const MAPAS = [
         minimapa: 'assets/img-mapas/Corrode_minimap.webp',
         ranqueada: {
             escolhas: 27112,
-            agentes: [
-                { id: 'clove', pick: 17.4 },
-                { id: 'fade', pick: 14.4 },
-                { id: 'waylay', pick: 11.2 },
-                { id: 'chamber', pick: 10.5 },
-                { id: 'jett', pick: 7.5 },
-                { id: 'reyna', pick: 7.0 },
-                { id: 'neon', pick: 6.4 },
-                { id: 'yoru', pick: 6.3 },
-                { id: 'vyse', pick: 4.1 },
-                { id: 'omen', pick: 2.5 },
-            ],
+            pick: {
+                clove: 17.4, fade: 14.4, waylay: 11.2, chamber: 10.5, jett: 7.5, reyna: 7,
+                neon: 6.4, yoru: 6.3, vyse: 4.1, omen: 2.5, sova: 2, viper: 1.4,
+                phoenix: 1.4, deadlock: 1.3, veto: 1.2, iso: 1, sage: 0.8, cypher: 0.8,
+                raze: 0.6, tejo: 0.5, kayo: 0.5, skye: 0.4, astra: 0.3, breach: 0.2,
+                harbor: 0.1, brimstone: 0.1, gekko: 0.1, killjoy: 0.1,
+            },
         },
         pro: null, // não esteve no Champions 2026 nem nos VCTs com dados
     },
@@ -152,31 +136,20 @@ const MAPAS = [
         minimapa: 'assets/img-mapas/Bind_minimap.webp',
         ranqueada: {
             escolhas: 32041,
-            agentes: [
-                { id: 'clove', pick: 15.8 },
-                { id: 'chamber', pick: 11.8 },
-                { id: 'raze', pick: 8.8 },
-                { id: 'skye', pick: 8.6 },
-                { id: 'jett', pick: 8.1 },
-                { id: 'fade', pick: 6.9 },
-                { id: 'yoru', pick: 6.4 },
-                { id: 'reyna', pick: 6.3 },
-                { id: 'waylay', pick: 5.8 },
-                { id: 'neon', pick: 4.2 },
-            ],
+            pick: {
+                clove: 15.8, chamber: 11.8, raze: 8.8, skye: 8.6, jett: 8.1, fade: 6.9,
+                yoru: 6.4, reyna: 6.3, waylay: 5.8, neon: 4.2, brimstone: 3.1, cypher: 2.8,
+                viper: 2.3, deadlock: 2, phoenix: 1.3, miks: 1, tejo: 0.8, sova: 0.8,
+                veto: 0.7, iso: 0.7, sage: 0.5, gekko: 0.3, omen: 0.3, vyse: 0.2,
+                killjoy: 0.2, astra: 0.2, kayo: 0.1, breach: 0.1, harbor: 0.1,
+            },
         },
         pro: {
             fonte: 'VCT Pacific Stage 1 2026 (poucas partidas)',
-            agentes: [
-                { id: 'neon', pick: 94 },
-                { id: 'brimstone', pick: 94 },
-                { id: 'viper', pick: 81 },
-                { id: 'skye', pick: 81 },
-                { id: 'waylay', pick: 44 },
-                { id: 'raze', pick: 19 },
-                { id: 'chamber', pick: 19 },
-                { id: 'kayo', pick: 13 },
-            ],
+            pick: {
+                neon: 94, brimstone: 94, viper: 81, skye: 81,
+                waylay: 44, raze: 19, chamber: 19, kayo: 13,
+            },
         },
     },
     {
@@ -185,31 +158,20 @@ const MAPAS = [
         minimapa: 'assets/img-mapas/Haven_minimap.webp',
         ranqueada: {
             escolhas: 67992,
-            agentes: [
-                { id: 'sova', pick: 16.6 },
-                { id: 'jett', pick: 16.2 },
-                { id: 'clove', pick: 15.2 },
-                { id: 'chamber', pick: 7.5 },
-                { id: 'reyna', pick: 7.2 },
-                { id: 'neon', pick: 6.4 },
-                { id: 'phoenix', pick: 6.0 },
-                { id: 'cypher', pick: 5.1 },
-                { id: 'killjoy', pick: 4.9 },
-                { id: 'omen', pick: 3.8 },
-            ],
+            pick: {
+                sova: 16.6, jett: 16.2, clove: 15.2, chamber: 7.5, reyna: 7.2, neon: 6.4,
+                phoenix: 6, cypher: 5.1, killjoy: 4.9, omen: 3.8, yoru: 3.2, waylay: 1.9,
+                iso: 1.3, miks: 0.8, raze: 0.6, skye: 0.5, sage: 0.5, breach: 0.4,
+                fade: 0.3, viper: 0.3, veto: 0.3, brimstone: 0.2, deadlock: 0.2, tejo: 0.2,
+                astra: 0.2, kayo: 0.2, vyse: 0.1, gekko: 0.1, harbor: 0.1,
+            },
         },
         pro: {
             fonte: 'Champions 2026',
-            agentes: [
-                { id: 'neon', pick: 83 },
-                { id: 'sova', pick: 78 },
-                { id: 'omen', pick: 72 },
-                { id: 'chamber', pick: 56 },
-                { id: 'phoenix', pick: 50 },
-                { id: 'yoru', pick: 44 },
-                { id: 'cypher', pick: 22 },
-                { id: 'fade', pick: 22 },
-            ],
+            pick: {
+                neon: 83, sova: 78, omen: 72, chamber: 56,
+                phoenix: 50, yoru: 44, cypher: 22, fade: 22,
+            },
         },
     },
     {
@@ -218,31 +180,20 @@ const MAPAS = [
         minimapa: 'assets/img-mapas/Sunset_minimap.webp',
         ranqueada: {
             escolhas: 23181,
-            agentes: [
-                { id: 'clove', pick: 15.8 },
-                { id: 'sova', pick: 13.6 },
-                { id: 'jett', pick: 10.5 },
-                { id: 'neon', pick: 9.5 },
-                { id: 'chamber', pick: 8.7 },
-                { id: 'reyna', pick: 7.3 },
-                { id: 'cypher', pick: 6.1 },
-                { id: 'phoenix', pick: 5.8 },
-                { id: 'raze', pick: 3.9 },
-                { id: 'omen', pick: 2.9 },
-            ],
+            pick: {
+                clove: 15.8, sova: 13.6, jett: 10.5, neon: 9.5, chamber: 8.7, reyna: 7.3,
+                cypher: 6.1, phoenix: 5.8, raze: 3.9, omen: 2.9, waylay: 2.3, fade: 2.1,
+                vyse: 1.9, yoru: 1.7, sage: 1.3, iso: 1.2, deadlock: 1.1, gekko: 0.8,
+                veto: 0.7, skye: 0.6, miks: 0.5, breach: 0.5, tejo: 0.3, kayo: 0.3,
+                brimstone: 0.2, killjoy: 0.1, viper: 0.1, harbor: 0.1, astra: 0.1,
+            },
         },
         pro: {
             fonte: 'Champions 2026',
-            agentes: [
-                { id: 'omen', pick: 100 },
-                { id: 'neon', pick: 77 },
-                { id: 'fade', pick: 73 },
-                { id: 'chamber', pick: 64 },
-                { id: 'cypher', pick: 36 },
-                { id: 'sage', pick: 32 },
-                { id: 'yoru', pick: 32 },
-                { id: 'sova', pick: 23 },
-            ],
+            pick: {
+                omen: 100, neon: 77, fade: 73, chamber: 64,
+                cypher: 36, sage: 32, yoru: 32, sova: 23,
+            },
         },
     },
     {
@@ -251,31 +202,20 @@ const MAPAS = [
         minimapa: 'assets/img-mapas/Lotus_minimap.webp',
         ranqueada: {
             escolhas: 43397,
-            agentes: [
-                { id: 'clove', pick: 14.0 },
-                { id: 'fade', pick: 13.9 },
-                { id: 'chamber', pick: 11.7 },
-                { id: 'jett', pick: 11.5 },
-                { id: 'raze', pick: 8.5 },
-                { id: 'neon', pick: 7.4 },
-                { id: 'reyna', pick: 6.5 },
-                { id: 'omen', pick: 4.0 },
-                { id: 'vyse', pick: 3.9 },
-                { id: 'waylay', pick: 3.0 },
-            ],
+            pick: {
+                clove: 14, fade: 13.9, chamber: 11.7, jett: 11.5, raze: 8.5, neon: 7.4,
+                reyna: 6.5, omen: 4, vyse: 3.9, waylay: 3, phoenix: 2.4, iso: 2.1,
+                miks: 1.5, killjoy: 1.2, cypher: 1.1, yoru: 1.1, skye: 1, breach: 0.9,
+                viper: 0.8, sage: 0.6, sova: 0.6, deadlock: 0.5, tejo: 0.5, veto: 0.4,
+                gekko: 0.4, brimstone: 0.2, astra: 0.2, kayo: 0.2, harbor: 0.1,
+            },
         },
         pro: {
             fonte: 'Champions 2026',
-            agentes: [
-                { id: 'omen', pick: 100 },
-                { id: 'fade', pick: 82 },
-                { id: 'viper', pick: 68 },
-                { id: 'neon', pick: 50 },
-                { id: 'chamber', pick: 50 },
-                { id: 'raze', pick: 50 },
-                { id: 'vyse', pick: 41 },
-                { id: 'skye', pick: 25 },
-            ],
+            pick: {
+                omen: 100, fade: 82, viper: 68, neon: 50,
+                chamber: 50, raze: 50, vyse: 41, skye: 25,
+            },
         },
     },
     {
@@ -284,31 +224,20 @@ const MAPAS = [
         minimapa: 'assets/img-mapas/Abyss_minimap.webp',
         ranqueada: {
             escolhas: 37132,
-            agentes: [
-                { id: 'sova', pick: 16.5 },
-                { id: 'jett', pick: 15.5 },
-                { id: 'clove', pick: 14.1 },
-                { id: 'chamber', pick: 13.5 },
-                { id: 'waylay', pick: 7.5 },
-                { id: 'yoru', pick: 6.5 },
-                { id: 'reyna', pick: 6.4 },
-                { id: 'astra', pick: 3.3 },
-                { id: 'neon', pick: 3.1 },
-                { id: 'iso', pick: 2.1 },
-            ],
+            pick: {
+                sova: 16.5, jett: 15.5, clove: 14.1, chamber: 13.5, waylay: 7.5, yoru: 6.5,
+                reyna: 6.4, astra: 3.3, neon: 3.1, iso: 2.1, omen: 2.1, vyse: 1.9,
+                cypher: 1.8, veto: 1.5, phoenix: 0.9, tejo: 0.6, kayo: 0.5, deadlock: 0.5,
+                sage: 0.4, harbor: 0.3, raze: 0.3, gekko: 0.2, skye: 0.2, fade: 0.2,
+                breach: 0.1, brimstone: 0.1, miks: 0.1, viper: 0.1, killjoy: 0,
+            },
         },
         pro: {
             fonte: 'Champions 2026',
-            agentes: [
-                { id: 'sova', pick: 100 },
-                { id: 'harbor', pick: 81 },
-                { id: 'yoru', pick: 69 },
-                { id: 'waylay', pick: 69 },
-                { id: 'astra', pick: 56 },
-                { id: 'omen', pick: 38 },
-                { id: 'neon', pick: 31 },
-                { id: 'jett', pick: 25 },
-            ],
+            pick: {
+                sova: 100, harbor: 81, yoru: 69, waylay: 69,
+                astra: 56, omen: 38, neon: 31, jett: 25,
+            },
         },
     },
 ];
