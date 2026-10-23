@@ -1126,6 +1126,20 @@ textarea {
     color: var(--cor-destaque);
 }
 
+/* Explicação da porcentagem, embaixo do seletor "Meta" */
+.meta-legenda {
+    max-width: 720px;
+    margin: -8px 0 24px;
+    font-size: 0.9rem;
+    color: var(--cor-suave);
+}
+
+.meta-legenda a {
+    color: var(--cor-destaque);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
 .fora-rotacao {
     display: flex;
     flex-direction: column;

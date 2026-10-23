@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentes por mapa · Valorant Hub</title>
     <meta name="description" content="Os agentes mais escolhidos em cada mapa da rotação competitiva do Valorant.">
-    <link rel="stylesheet" href="style.css?v=9">
+    <link rel="stylesheet" href="style.css?v=10">
 </head>
 
 <body>
@@ -35,13 +35,21 @@
             <div class="container">
                 <p class="pagina-rotulo" id="rotacao-info">Rotação competitiva</p>
                 <h1>Agentes por mapa</h1>
-                <p class="pagina-descricao">Os agentes mais escolhidos em cada mapa da rotação competitiva. A
-                    porcentagem mostra em quantas partidas profissionais o agente foi escolhido naquele mapa. Clique
-                    na imagem para ver o minimapa.</p>
+                <p class="pagina-descricao">Os agentes mais escolhidos em cada mapa da rotação competitiva.
+                    Clique na imagem para ver o minimapa.</p>
             </div>
         </section>
 
         <section class="container">
+            <!-- Escolher de onde vem o meta (botões criados pelo agentes.js a partir de METAS) -->
+            <div class="barra">
+                <div class="controle">
+                    <span class="rotulo">Meta</span>
+                    <div class="segmentos" id="opcoes-meta"></div>
+                </div>
+            </div>
+            <p class="meta-legenda" id="meta-legenda"></p>
+
             <!-- Os cards são criados pelo agentes.js a partir do mapas-data.js -->
             <div class="grade" id="mapas-grid"></div>
 
@@ -71,9 +79,9 @@
         </div>
     </footer>
 
-    <script src="script.js?v=9"></script>
-    <script src="mapas-data.js?v=9"></script>
-    <script src="agentes.js?v=9"></script>
+    <script src="script.js?v=10"></script>
+    <script src="mapas-data.js?v=10"></script>
+    <script src="agentes.js?v=10"></script>
 </body>
 
 </html>
