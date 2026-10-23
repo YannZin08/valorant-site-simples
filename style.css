@@ -985,330 +985,641 @@ textarea {
 
 /* =========================================================
    7. PÁGINA AGENTES
+   Seleção: um mapa por vez, com os 5 que mais aparecem
+   Quadro: todos os mapas lado a lado
    ========================================================= */
 
-:root {
-    --carga-meta: var(--cor-destaque);
-    --carga-segunda: #56647e;
-    --carga-vazia: rgba(148, 163, 184, 0.13);
-}
+/* ---------- Faixa para escolher o mapa ---------- */
 
-/* ---------- Legenda: como ler as barras ---------- */
-
-.meta-legenda {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 760px;
-    margin: -6px 0 28px;
-    font-size: 0.92rem;
-    color: var(--cor-suave);
-}
-
-.meta-legenda strong {
-    font-weight: 600;
-    color: var(--cor-texto);
-}
-
-.legenda-amostras {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 24px;
-    font-size: 0.85rem;
-}
-
-.legenda-amostra {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.legenda-amostra .carga {
-    width: 64px;
-}
-
-.legenda-fonte {
-    font-size: 0.82rem;
-}
-
-.legenda-fonte a {
-    color: var(--cor-destaque);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-}
-
-/* ---------- Grade: 2 mapas por linha ---------- */
-
-.grade-mapas {
+.faixa-mapas {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 22px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 8px;
+    margin-bottom: 16px;
 }
 
-/* ---------- Card do mapa ---------- */
-
-.mapa-card {
-    display: flex;
-    flex-direction: column;
-    padding: 10px;
-}
-
-/* o fundo não muda no hover: as barras usam a cor do painel para "cortar" os segmentos */
-.mapa-card:hover {
-    background: var(--cor-painel);
-}
-
-.mapa-capa {
+.faixa-mapa {
     position: relative;
-    aspect-ratio: 21 / 8;
+    aspect-ratio: 16 / 10;
+    padding: 0;
     overflow: hidden;
-    background: linear-gradient(135deg, #1e293b, #312e81);
-    border-radius: var(--raio-pequeno);
+    border: 1px solid var(--cor-linha);
+    border-radius: 10px;
+    background: var(--cor-painel);
+    text-align: left;
+    cursor: pointer;
 }
 
-.mapa-capa img {
+.faixa-mapa img {
+    position: absolute;
+    inset: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    opacity: 0.45;
+    filter: saturate(0.6);
 }
 
-.mapa-capa.sem-imagem img {
-    visibility: hidden;
-}
-
-/* escurece embaixo para o nome ficar legível */
-.mapa-capa::after {
+/* escurece embaixo para o nome aparecer */
+.faixa-mapa::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(5, 9, 20, 0.9) 0%, rgba(5, 9, 20, 0.2) 55%, transparent 100%);
-    pointer-events: none;
+    background: linear-gradient(to top, rgba(10, 15, 29, 0.95), rgba(10, 15, 29, 0) 70%);
 }
 
-.mapa-nome {
+.faixa-nome {
     position: absolute;
-    left: 16px;
-    bottom: 10px;
+    left: 12px;
+    bottom: 8px;
     z-index: 1;
     font-family: var(--fonte-display);
-    font-size: clamp(2.2rem, 4vw, 2.9rem);
+    font-size: 1.35rem;
     font-weight: 800;
     line-height: 1;
     letter-spacing: 0.03em;
     text-transform: uppercase;
-    color: #fff;
-}
-
-.mapa-capa .selo {
-    position: absolute;
-    top: 12px;
-    left: 16px;
-    z-index: 1;
-}
-
-.mapa-capa .selo:not(.selo-cheio) {
-    background: rgba(5, 9, 20, 0.8);
-}
-
-.mapa-minimapa {
-    position: absolute;
-    right: 12px;
-    bottom: 12px;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 10px;
-    background: rgba(5, 9, 20, 0.7);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    border-radius: var(--raio-pequeno);
-    color: #fff;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    backdrop-filter: blur(6px);
-    transition: border-color 0.2s ease, color 0.2s ease;
-}
-
-.mapa-minimapa:hover {
-    border-color: var(--cor-destaque);
-    color: var(--cor-destaque);
-}
-
-.mapa-corpo {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 14px 8px 8px;
-}
-
-.mapa-fonte {
-    font-family: var(--fonte-mono);
-    font-size: 0.75rem;
     color: var(--cor-suave);
 }
 
-.mapa-sem-dados {
-    padding: 28px 8px;
-    font-size: 0.92rem;
-    text-align: center;
-    color: var(--cor-suave);
-}
-
-/* ---------- As 4 funções (2x2 quando cabe, 1 coluna no celular) ---------- */
-
-.funcoes {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 22px 28px;
-}
-
-.funcao-nome {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
+.faixa-selo {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: rgba(10, 15, 29, 0.85);
     font-family: var(--fonte-mono);
-    font-size: 0.68rem;
-    font-weight: 600;
+    font-size: 0.6rem;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+    color: var(--cor-suave);
+}
+
+.faixa-mapa:hover .faixa-nome {
     color: var(--cor-texto);
 }
 
-.funcao-nome::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--cor-linha);
+.faixa-mapa.ativo {
+    border-color: var(--cor-destaque);
 }
 
-.funcao-lista {
+.faixa-mapa.ativo img {
+    opacity: 0.9;
+    filter: none;
+}
+
+.faixa-mapa.ativo .faixa-nome {
+    color: var(--cor-texto);
+}
+
+.faixa-mapa.ativo .faixa-selo {
+    color: var(--cor-destaque);
+}
+
+/* risco ciano embaixo do mapa escolhido */
+.faixa-mapa.ativo::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    height: 3px;
+    background: var(--cor-destaque);
+}
+
+/* ---------- Palco: o mapa escolhido ---------- */
+
+.palco {
+    overflow: hidden;
+    border: 1px solid var(--cor-linha);
+    border-radius: 16px;
+    background: var(--cor-painel);
+}
+
+/* a arte do mapa vem do agentes.js na variável --arte */
+.palco-capa {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    min-height: 350px;
+    padding: 32px 32px 0;
+    background:
+        linear-gradient(0deg, var(--cor-painel) 8%, rgba(15, 23, 41, 0) 62%),
+        linear-gradient(90deg, rgba(10, 15, 29, 0.9) 0%, rgba(10, 15, 29, 0.45) 50%, rgba(10, 15, 29, 0.25) 100%),
+        var(--arte, none) center 40% / cover,
+        var(--cor-painel-2);
+}
+
+.palco-selo {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 3px 8px;
+    border: 1px solid rgba(34, 211, 238, 0.5);
+    border-radius: 4px;
+    background: rgba(10, 15, 29, 0.6);
+    font-family: var(--fonte-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cor-destaque);
+}
+
+.palco-nome {
+    font-family: var(--fonte-display);
+    font-size: clamp(3.6rem, 10vw, 8.5rem);
+    font-weight: 800;
+    line-height: 0.82;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+}
+
+.palco-info {
+    margin-top: 14px;
+    font-family: var(--fonte-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+    color: #b6c2d6;
+}
+
+.palco-info a {
+    color: var(--cor-texto);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+}
+
+.palco-titulo {
+    flex: 1;
+    min-width: 0;
+}
+
+.palco-lado {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    list-style: none;
+    flex-shrink: 0;
+    align-items: flex-end;
+    gap: 14px;
 }
 
-.funcao-vazia {
+.palco-lado .segmentos {
+    flex-wrap: nowrap;
+    background: rgba(10, 15, 29, 0.75);
+}
+
+.palco-minimapa {
+    display: grid;
+    gap: 6px;
+    width: 132px;
+    padding: 8px 8px 6px;
+    border: 1px solid var(--cor-linha-forte);
+    border-radius: 12px;
+    background: rgba(10, 15, 29, 0.72);
+    cursor: pointer;
+}
+
+.palco-minimapa img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+}
+
+.palco-minimapa span {
+    font-family: var(--fonte-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cor-suave);
+}
+
+.palco-minimapa:hover {
+    border-color: var(--cor-destaque);
+}
+
+/* sobe por cima do fim da arte, como se os agentes estivessem no mapa */
+.palco-corpo {
+    position: relative;
+    margin-top: -84px;
+    padding: 0 32px 32px;
+}
+
+.palco-legenda {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-bottom: 14px;
+}
+
+.palco-legenda h3 {
+    font-family: var(--fonte-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.palco-legenda p {
     font-size: 0.85rem;
     color: var(--cor-suave);
 }
 
-/* ---------- Linha de um agente: foto | nome + % | barra ---------- */
+.palco-legenda strong {
+    color: var(--cor-destaque);
+}
 
-.agente-linha {
+/* ---------- As 5 cartas ---------- */
+
+.fileira {
     display: grid;
-    grid-template-columns: 36px minmax(0, 1fr);
-    align-items: center;
-    gap: 12px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px;
+    list-style: none;
 }
 
-.agente-foto {
-    width: 36px;
-    height: 36px;
+/* retrato e placa (função + nome) dividem a mesma área: a placa fica por cima */
+.carta {
+    display: grid;
+    grid-template-areas:
+        "retrato"
+        "medida"
+        "subs";
+    grid-template-rows: auto auto 1fr;
+    overflow: hidden;
+    border: 1px solid var(--cor-linha);
+    border-radius: 12px;
+    background: #0c1426;
+}
+
+.carta-retrato {
+    grid-area: retrato;
+    position: relative;
+    aspect-ratio: 268 / 358;
+    background: #1d2229;
+    /* canto chanfrado */
+    clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 0 100%);
+}
+
+.carta-retrato img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
     object-fit: cover;
-    background: var(--cor-campo);
-    border-radius: var(--raio-pequeno);
+    object-position: top;
 }
 
-.agente-sem-foto {
+.carta-inicial {
+    position: absolute;
+    inset: 0;
     display: grid;
     place-items: center;
     font-family: var(--fonte-display);
-    font-size: 1.1rem;
-    font-weight: 700;
+    font-size: 5rem;
+    font-weight: 800;
     color: var(--cor-suave);
 }
 
-.agente-topo {
-    display: flex;
-    align-items: baseline;
-    gap: 8px;
-    margin-bottom: 6px;
+.carta-placa {
+    grid-area: retrato;
+    align-self: end;
+    z-index: 1;
+    display: grid;
+    padding: 48px 14px 12px;
+    background: linear-gradient(to top, rgba(8, 12, 22, 0.96) 32%, rgba(8, 12, 22, 0));
 }
 
-.agente-nome {
-    overflow: hidden;
-    font-size: 0.92rem;
-    font-weight: 600;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-}
-
-.agente-tag {
-    flex-shrink: 0;
+.carta-funcao {
     font-family: var(--fonte-mono);
-    font-size: 0.62rem;
-    letter-spacing: 0.08em;
+    font-size: 0.66rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #a9b6cc;
+}
+
+.carta-nome {
+    font-family: var(--fonte-display);
+    font-size: 2.1rem;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.carta-medida {
+    grid-area: medida;
+    display: grid;
+    gap: 8px;
+    padding: 12px 14px;
+}
+
+.carta-num {
+    font-family: var(--fonte-display);
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 0.9;
+    color: var(--cor-destaque);
+}
+
+.carta-num small {
+    margin-left: 2px;
+    font-size: 0.5em;
+    color: var(--cor-suave);
+}
+
+/* 20 risquinhos, cada um vale 5% */
+.contagem {
+    display: grid;
+    grid-template-columns: repeat(20, minmax(0, 1fr));
+    gap: 3px;
+    height: 12px;
+}
+
+.contagem i {
+    border-radius: 1px;
+    background: rgba(148, 163, 184, 0.16);
+}
+
+.contagem i.cheia {
+    background: var(--cor-destaque);
+}
+
+.carta-subs {
+    grid-area: subs;
+    align-self: start;
+    display: grid;
+    gap: 7px;
+    margin: 0 14px;
+    padding: 10px 0 14px;
+    border-top: 1px dashed var(--cor-linha-forte);
+}
+
+.subs-rotulo {
+    font-family: var(--fonte-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--cor-suave);
 }
 
-.agente-valor {
-    margin-left: auto;
-    font-family: var(--fonte-display);
-    font-size: 1.25rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--carga-meta);
-    font-variant-numeric: tabular-nums;
+.subs-vazio {
+    font-size: 0.8rem;
+    color: var(--cor-suave);
 }
 
-/* Barra de "carga" em 10 partes, como os pontos de habilidade do jogo (cada parte = 10%) */
-.carga {
-    position: relative;
-    height: 7px;
+.sub {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: #c9d3e3;
+}
+
+.sub-nome {
     overflow: hidden;
-    background: var(--carga-vazia);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.sub-valor {
+    font-family: var(--fonte-mono);
+    font-size: 0.8rem;
+    color: var(--cor-suave);
+}
+
+/* rostinho: recorte da arte do agente (sem arte: a inicial) */
+.rosto {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    background-color: #1d2229;
+    background-size: 240%;
+    background-position: 50% 14%;
+    font-family: var(--fonte-display);
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--cor-suave);
+}
+
+.fileira-vazia {
+    grid-column: 1 / -1;
+    padding: 48px 16px;
+    text-align: center;
+    color: var(--cor-suave);
+}
+
+/* ---------- Quadro: todos os mapas ---------- */
+
+.quadro-barra {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    margin-bottom: 18px;
+}
+
+.quadro-chave {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    font-size: 0.84rem;
+    color: var(--cor-suave);
+}
+
+.chave-escala {
+    display: inline-flex;
+    gap: 2px;
+}
+
+.chave-escala i {
+    width: 18px;
+    height: 12px;
     border-radius: 2px;
+    background: rgba(34, 211, 238, calc(var(--v) / 100 * 0.62 + 0.04));
 }
 
-.carga > span {
-    position: absolute;
-    inset: 0 auto 0 0;
-    width: calc(var(--valor, 0) * 1%);
-    background: var(--carga-meta);
+.chave-top {
+    display: inline-block;
+    min-width: 34px;
+    margin-right: 8px;
+    padding: 1px 6px;
+    border: 1.5px solid var(--cor-destaque);
+    border-radius: 4px;
+    font-family: var(--fonte-display);
+    font-size: 1rem;
+    text-align: center;
+    color: var(--cor-texto);
 }
 
-/* os cortes entre as partes, na cor do painel */
-.carga::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(90deg,
-            transparent 0 calc(10% - 2px),
-            var(--cor-fundo) calc(10% - 2px) 10%);
+.quadro-rolagem {
+    overflow-x: auto;
+    border: 1px solid var(--cor-linha);
+    border-radius: 16px;
+    background: var(--cor-painel);
 }
 
-.mapa-card .carga::after {
-    background: repeating-linear-gradient(90deg,
-            transparent 0 calc(10% - 2px),
-            var(--cor-painel) calc(10% - 2px) 10%);
+.quadro {
+    width: 100%;
+    min-width: 760px;
+    padding: 10px 12px 14px;
+    border-collapse: separate;
+    border-spacing: 4px;
 }
 
-/* 2ª opção: abaixo de uma linha tracejada, em cinza */
-.agente-linha.segunda {
-    padding-top: 12px;
-    border-top: 1px dashed var(--cor-linha-forte);
+.quadro th,
+.quadro td {
+    font-weight: 400;
 }
 
-.agente-linha.segunda .agente-foto {
-    filter: grayscale(1);
+/* coluna dos nomes fica parada quando o quadro rola para o lado (celular) */
+.quadro-canto,
+.quadro-agente {
+    position: sticky;
+    left: 0;
+    z-index: 1;
+    background: var(--cor-painel);
+    box-shadow: 4px 0 0 var(--cor-painel);
+}
+
+.quadro-canto {
+    padding: 0 8px 8px;
+    vertical-align: bottom;
+    text-align: left;
+    font-family: var(--fonte-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--cor-suave);
+}
+
+.quadro-mapa {
+    width: 12%;
+    padding: 0 0 6px;
+    vertical-align: bottom;
+}
+
+.quadro-mapa button {
+    display: block;
+    width: 100%;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+
+.quadro-mapa img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
     opacity: 0.7;
 }
 
-.agente-linha.segunda .agente-nome {
-    font-weight: 500;
+.quadro-mapa span {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--fonte-display);
+    font-size: 1.3rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+}
+
+.quadro-mapa button:hover img,
+.quadro-mapa button.ativo img {
+    opacity: 1;
+}
+
+.quadro-mapa button.ativo span {
+    color: var(--cor-destaque);
+}
+
+.quadro-grupo th {
+    padding: 16px 8px 4px;
+    text-align: left;
+}
+
+.quadro-grupo span {
+    position: sticky;
+    left: 8px;
+    font-family: var(--fonte-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--cor-destaque);
+}
+
+.quadro-agente {
+    padding: 2px 8px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.quadro-agente > * {
+    vertical-align: middle;
+}
+
+.quadro-agente .rosto {
+    display: inline-grid;
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+.quadro-agente span:last-child {
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.quadro tbody tr:hover .quadro-agente {
+    color: var(--cor-destaque);
+}
+
+/* a cor da célula vem da % (variável --v, de 0 a 100) */
+.quadro td {
+    height: 38px;
+    border-radius: 6px;
+    background: rgba(34, 211, 238, calc(var(--v, 0) / 100 * 0.62 + 0.03));
+    text-align: center;
+    font-family: var(--fonte-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #c9d3e3;
+}
+
+.quadro td.fraco {
+    font-size: 1rem;
+    color: rgba(139, 154, 179, 0.6);
+}
+
+.quadro td.top {
+    box-shadow: inset 0 0 0 1.5px var(--cor-destaque);
+    font-weight: 800;
+    color: #fff;
+}
+
+.quadro td.sem {
+    background: transparent;
+    font-family: var(--fonte-mono);
+    font-size: 0.9rem;
     color: var(--cor-suave);
 }
 
-.agente-linha.segunda .agente-valor {
+.quadro-fonte {
+    margin-top: 12px;
+    font-size: 0.82rem;
     color: var(--cor-suave);
-}
-
-.segunda .carga > span {
-    background: var(--carga-segunda);
 }
 
 /* ---------- Mapas fora da rotação ---------- */
@@ -1318,6 +1629,123 @@ textarea {
     flex-direction: column;
     gap: 12px;
     margin-top: 48px;
+}
+
+/* ---------- Agentes em telas menores ---------- */
+
+/* faixa de mapas vira uma fila que rola para o lado */
+@media (max-width: 1000px) {
+    .faixa-mapas {
+        display: flex;
+        overflow-x: auto;
+        padding-bottom: 6px;
+        scroll-snap-type: x proximity;
+    }
+
+    .faixa-mapa {
+        flex: 0 0 148px;
+        scroll-snap-align: start;
+    }
+}
+
+/* cartas deitadas: retrato pequeno à esquerda, dados à direita */
+@media (max-width: 900px) {
+    .fileira {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .carta {
+        grid-template-columns: 92px minmax(0, 1fr);
+        grid-template-areas:
+            "retrato placa"
+            "retrato medida"
+            "subs subs";
+        grid-template-rows: auto 1fr auto;
+    }
+
+    .carta-retrato {
+        clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%);
+    }
+
+    .carta-placa {
+        grid-area: placa;
+        align-self: start;
+        padding: 12px 12px 0;
+        background: none;
+    }
+
+    .carta-nome {
+        font-size: 1.7rem;
+    }
+
+    .carta-medida {
+        align-self: start;
+        padding: 8px 12px 10px;
+    }
+
+    .carta-num {
+        font-size: 2.2rem;
+    }
+
+    .carta-subs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 6px 12px;
+        margin: 0 12px;
+        padding: 10px 0 12px;
+    }
+
+    .subs-rotulo,
+    .subs-vazio {
+        grid-column: 1 / -1;
+    }
+}
+
+@media (max-width: 560px) {
+    .fileira {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .palco-capa {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+        min-height: 0;
+        padding: 20px 16px 22px;
+    }
+
+    .palco-lado {
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .palco-minimapa {
+        grid-template-columns: 40px auto;
+        align-items: center;
+        gap: 8px;
+        width: auto;
+        padding: 5px 10px 5px 5px;
+    }
+
+    .palco-corpo {
+        margin-top: 0;
+        padding: 4px 16px 16px;
+    }
+
+    .palco-legenda {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+
+/* celular estreito: substitutos um embaixo do outro */
+@media (max-width: 400px) {
+    .carta-subs {
+        grid-template-columns: minmax(0, 1fr);
+    }
 }
 
 
@@ -1392,19 +1820,6 @@ textarea {
 /* =========================================================
    9. TELAS MENORES E ACESSIBILIDADE
    ========================================================= */
-
-@media (max-width: 900px) {
-    .grade-mapas {
-        grid-template-columns: minmax(0, 1fr);
-    }
-}
-
-/* celular: capa do mapa um pouco mais alta */
-@media (max-width: 560px) {
-    .mapa-capa {
-        aspect-ratio: 2 / 1;
-    }
-}
 
 @media (max-width: 1024px) {
     .grade {

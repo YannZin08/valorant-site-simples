@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentes por mapa · Valorant Hub</title>
-    <meta name="description" content="Os agentes mais escolhidos em cada mapa da rotação competitiva do Valorant.">
-    <link rel="stylesheet" href="style.css?v=12">
+    <meta name="description" content="Os agentes que mais aparecem em cada mapa da rotação competitiva do Valorant, com substitutos por função.">
+    <link rel="stylesheet" href="style.css?v=13">
 </head>
 
 <body>
@@ -35,24 +35,61 @@
             <div class="container">
                 <p class="pagina-rotulo" id="rotacao-info">Rotação competitiva</p>
                 <h1>Agentes por mapa</h1>
-                <p class="pagina-descricao">Quem escolher em cada função, mapa por mapa. Veja o meta da
-                    ranqueada ou dos campeonatos.</p>
+                <p class="pagina-descricao">Escolha o mapa e veja quem os times mais jogam. Se já pegaram o seu
+                    agente, os substitutos estão logo abaixo dele.</p>
             </div>
         </section>
 
-        <section class="container">
-            <!-- Escolher de onde vem o meta (botões criados pelo agentes.js a partir de METAS) -->
-            <div class="barra">
-                <div class="controle">
-                    <span class="rotulo">Meta</span>
-                    <div class="segmentos" id="opcoes-meta"></div>
+        <!-- SELEÇÃO: um mapa por vez (tudo preenchido pelo agentes.js a partir do mapas-data.js) -->
+        <section class="container" aria-label="Agentes do mapa escolhido">
+            <nav class="faixa-mapas" id="faixa-mapas" aria-label="Escolher mapa"></nav>
+
+            <article class="palco" id="palco">
+                <div class="palco-capa" id="palco-capa">
+                    <div class="palco-titulo">
+                        <span class="palco-selo" id="palco-selo" hidden></span>
+                        <h2 class="palco-nome" id="palco-nome">Mapa</h2>
+                        <p class="palco-info" id="palco-info"></p>
+                    </div>
+                    <div class="palco-lado">
+                        <div class="segmentos" data-grupo-meta role="group" aria-label="De onde vem o meta"></div>
+                        <button type="button" class="palco-minimapa" id="palco-minimapa">
+                            <img id="palco-minimapa-img" alt="">
+                            <span>Minimapa</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="palco-corpo">
+                    <div class="palco-legenda">
+                        <h3>Os 5 que mais aparecem</h3>
+                        <p id="palco-exemplo"></p>
+                    </div>
+                    <ol class="fileira" id="fileira"></ol>
+                </div>
+            </article>
+        </section>
+
+        <!-- QUADRO: todos os mapas lado a lado -->
+        <section class="container secao" aria-labelledby="titulo-quadro">
+            <div class="secao-topo">
+                <h2 id="titulo-quadro">Comparar mapas</h2>
+                <p class="secao-descricao">Ache seu agente e veja em quais mapas ele mais aparece. Clique num mapa
+                    para abrir ele lá em cima.</p>
+            </div>
+            <div class="quadro-barra">
+                <div class="segmentos" data-grupo-meta role="group" aria-label="De onde vem o meta"></div>
+                <div class="quadro-chave">
+                    <span class="chave-escala" aria-hidden="true"><i style="--v:10"></i><i style="--v:30"></i><i
+                            style="--v:50"></i><i style="--v:70"></i><i style="--v:90"></i></span>
+                    <span>% dos times que jogaram com o agente</span>
+                    <span><b class="chave-top">76</b>entre os 5 que mais aparecem no mapa</span>
                 </div>
             </div>
-            <!-- Como ler as barras (texto e exemplo montados pelo agentes.js) -->
-            <div class="meta-legenda" id="meta-legenda"></div>
-
-            <!-- Os cards são criados pelo agentes.js a partir do mapas-data.js -->
-            <div class="grade-mapas" id="mapas-grid"></div>
+            <div class="quadro-rolagem">
+                <table class="quadro" id="quadro"></table>
+            </div>
+            <p class="quadro-fonte" id="quadro-fonte"></p>
 
             <div class="fora-rotacao">
                 <span class="rotulo">Fora da rotação</span>
@@ -61,7 +98,7 @@
         </section>
     </main>
 
-    <!-- MINIMAPA (abre ao clicar na imagem de um mapa) -->
+    <!-- MINIMAPA AMPLIADO -->
     <div class="modal" id="mapModal" role="dialog" aria-modal="true" aria-labelledby="mapTitle">
         <div class="modal-conteudo">
             <button type="button" class="botao botao-fantasma botao-pequeno modal-fechar" onclick="closeMap()"
@@ -80,9 +117,9 @@
         </div>
     </footer>
 
-    <script src="script.js?v=12"></script>
-    <script src="mapas-data.js?v=12"></script>
-    <script src="agentes.js?v=12"></script>
+    <script src="script.js?v=13"></script>
+    <script src="mapas-data.js?v=13"></script>
+    <script src="agentes.js?v=13"></script>
 </body>
 
 </html>

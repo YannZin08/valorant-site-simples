@@ -3,20 +3,22 @@
    ============================================
    Quando o meta mudar, é só mexer neste arquivo:
    - ROTACAO: dados da rotação competitiva atual
-   - METAS: regra e fonte de cada meta (ranqueada e profissional)
+   - METAS: de onde vem cada meta (ranqueada e profissional)
    - MAPAS: os mapas que aparecem na página, na ordem
    - FORA_DA_ROTACAO: nomes dos mapas que saíram
 
    Em cada mapa:
    - "ranqueada.pick": % de TODAS as escolhas de agente no mapa, para
-     cada agente (copie a tabela inteira da fonte). A página soma por
-     função e mostra a fatia de cada agente dentro da sua função.
-   - "pro.pick": % dos times profissionais que escolheram o agente.
-     Use pro: null quando o mapa não teve campeonato com dados.
+     cada agente (copie a tabela inteira da fonte). Como cada time tem
+     5 agentes diferentes, a página multiplica por 5 para chegar em
+     "% dos times que jogaram com o agente".
+   - "pro.pick": % dos times profissionais que escolheram o agente
+     (já vem nesse formato). Use pro: null quando o mapa não teve
+     campeonato com dados.
 
-   Na página, em cada função:
-   - meta = agentes com pelo menos METAS[...].minimo% (sempre o 1º entra)
-   - 2ª opção = o próximo mais escolhido depois do meta
+   Na página:
+   - os 5 com a maior % formam o time que mais aparece no mapa
+   - "Se já pegaram" = os próximos da mesma função
 */
 
 const ROTACAO = {
@@ -25,27 +27,25 @@ const ROTACAO = {
     atualizadoEm: 'outubro de 2026',
 };
 
-// Regra e fonte de cada meta (o seletor "Ranqueada | Profissional" usa isto)
+// Fonte de cada meta (o seletor "Ranqueada | Profissional" usa isto)
 const METAS = {
     ranqueada: {
         rotulo: 'Ranqueada',
-        medida: 'funcao', // barra = fatia do agente dentro da função
-        minimo: 20,       // meta = 20% ou mais das escolhas da função
+        formato: 'escolhas', // pick = % de todas as escolhas (a página faz x5)
         fonte: 'MetaBot.gg',
         url: 'https://metabot.gg/en/valorant',
         atualizadoEm: '22 de outubro de 2026',
     },
     pro: {
         rotulo: 'Profissional',
-        medida: 'times',  // barra = % dos times que escolheram o agente
-        minimo: 25,       // meta = escolhido por 25% ou mais dos times
+        formato: 'times',    // pick = % dos times (usa direto)
         fonte: 'VLR.gg',
         url: 'https://www.vlr.gg/event/agents/2766/valorant-champions-2026',
         atualizadoEm: 'outubro de 2026',
     },
 };
 
-// Funções, na ordem em que aparecem nos cards
+// Funções, na ordem em que aparecem no quadro
 const FUNCOES = {
     duelista: 'Duelistas',
     iniciador: 'Iniciadores',

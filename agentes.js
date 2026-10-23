@@ -1,264 +1,333 @@
 /* ============================================
    PÁGINA DE AGENTES
-   Monta os cards dos mapas a partir do mapas-data.js.
-   O seletor "Meta" troca entre ranqueada (padrão) e profissional.
+   Tudo é montado a partir do mapas-data.js:
+   1) a conta: "% dos times que jogaram com o agente"
+   2) Seleção: um mapa por vez, com os 5 que mais aparecem
+      e os substitutos de cada um ("Se já pegaram")
+   3) Quadro: todos os mapas lado a lado
+   4) Seletor "Ranqueada | Profissional" (vale para as duas partes)
    ============================================ */
 
-const gridMapas = document.getElementById('mapas-grid');
 const CHAVE_META = 'valorant-meta-escolhido';
+const CHAVE_MAPA = 'valorant-mapa-escolhido';
+const MINIMO_NO_QUADRO = 15; // o quadro mostra quem passa disso em algum mapa
 
 let metaAtual = 'ranqueada';
+let mapaAtual = MAPAS[0];
+
+const NOME_FUNCAO = {
+    duelista: 'Duelista',
+    iniciador: 'Iniciador',
+    controlador: 'Controlador',
+    sentinela: 'Sentinela',
+};
 
 
 /* ============================================
-   1) CALCULAR O META DE UM MAPA
+   1) A CONTA
    ============================================ */
 
 /**
- * Recebe os números de um mapa ({ clove: 15.1, jett: 12.8, ... }) e devolve,
- * para cada função: os agentes do meta e a 2ª opção.
- * "barra" é o valor que vai na barra (0 a 100):
- *  - ranqueada: fatia do agente dentro da função
- *  - profissional: % dos times que escolheram o agente
+ * Lista os agentes do mapa com a % dos times que jogaram com cada um,
+ * do maior para o menor. Devolve null se o mapa não tem dados nesse meta.
+ * Ranqueada: o pick é % de todas as escolhas; cada time tem 5 agentes
+ * diferentes, então % dos times = pick x 5.
  */
-function calcularMeta(pick, meta) {
-    return Object.keys(FUNCOES).map(funcao => {
-        const agentes = Object.entries(pick)
-            .filter(([id]) => AGENTES[id] && AGENTES[id].funcao === funcao)
-            .map(([id, valor]) => ({ id, valor }))
-            .sort((a, b) => b.valor - a.valor);
+function presencaNoMapa(mapa, chave) {
+    const dados = chave === 'ranqueada' ? mapa.ranqueada : mapa.pro;
+    if (!dados) return null;
+    const multiplicador = METAS[chave].formato === 'escolhas' ? 5 : 1;
 
-        if (meta.medida === 'funcao') {
-            const totalDaFuncao = agentes.reduce((soma, a) => soma + a.valor, 0);
-            agentes.forEach(a => { a.barra = totalDaFuncao ? (a.valor / totalDaFuncao) * 100 : 0; });
-        } else {
-            agentes.forEach(a => { a.barra = a.valor; });
-        }
+    return Object.entries(dados.pick)
+        .filter(([id]) => AGENTES[id])
+        .map(([id, valor]) => ({ id, valor: Math.min(100, Math.round(valor * multiplicador)) }))
+        .sort((a, b) => b.valor - a.valor); // empate: fica a ordem do arquivo
+}
 
-        // Meta: quem passa do mínimo (o 1º da função sempre entra)
-        const acimaDoMinimo = agentes.filter(a => a.barra >= meta.minimo);
-        const doMeta = acimaDoMinimo.length > 0 ? acimaDoMinimo : agentes.slice(0, 1);
+// Os próximos da mesma função que não estão entre os 5
+function substitutos(lista, agente, time) {
+    const noTime = new Set(time.map(a => a.id));
+    const funcao = AGENTES[agente.id].funcao;
+    return lista
+        .filter(a => !noTime.has(a.id) && AGENTES[a.id].funcao === funcao && a.valor >= 1)
+        .slice(0, 2);
+}
 
-        return {
-            funcao,
-            doMeta,
-            segunda: agentes[doMeta.length] || null, // o próximo depois do meta
-        };
-    });
+function criar(tag, classe, texto) {
+    const elemento = document.createElement(tag);
+    if (classe) elemento.className = classe;
+    if (texto != null) elemento.textContent = texto;
+    return elemento;
+}
+
+// Rostinho do agente (recorte da arte); sem imagem, mostra a inicial
+function criarRosto(id) {
+    const agente = AGENTES[id];
+    const rosto = criar('span', 'rosto');
+    rosto.setAttribute('aria-hidden', 'true');
+    if (agente.img) rosto.style.backgroundImage = `url(${agente.img})`;
+    else rosto.textContent = agente.nome[0];
+    return rosto;
+}
+
+// Marcas contadas: 20 risquinhos, cada um vale 5%
+function criarContagem(valor) {
+    const contagem = criar('span', 'contagem');
+    contagem.setAttribute('aria-hidden', 'true');
+    const cheias = Math.round(valor / 5);
+    for (let i = 0; i < 20; i++) contagem.appendChild(criar('i', i < cheias ? 'cheia' : ''));
+    return contagem;
 }
 
 
 /* ============================================
-   2) CARDS
+   2) SELEÇÃO (um mapa por vez)
    ============================================ */
 
-const ICONE_MINIMAPA = `
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2zM9 4v14M15 6v14" />
-    </svg>`;
+function montarFaixaDeMapas() {
+    const faixa = document.getElementById('faixa-mapas');
+    MAPAS.forEach(mapa => {
+        const botao = criar('button', 'faixa-mapa');
+        botao.type = 'button';
+        botao.dataset.mapa = mapa.nome;
 
-function criarCardMapa(mapa) {
-    const card = document.createElement('article');
-    card.className = 'cartao mapa-card';
-    card.innerHTML = `
-        <div class="mapa-capa">
-            <img alt="" loading="lazy">
-            <h3 class="mapa-nome"></h3>
-            <button type="button" class="mapa-minimapa">${ICONE_MINIMAPA}<span>Minimapa</span></button>
-        </div>
-        <div class="mapa-corpo">
-            <p class="mapa-fonte"></p>
-            <div class="funcoes"></div>
-        </div>
-    `;
+        const imagem = criar('img');
+        imagem.src = mapa.imagem;
+        imagem.alt = '';
+        imagem.loading = 'lazy';
+        botao.append(imagem, criar('span', 'faixa-nome', mapa.nome));
+        if (mapa.selo) botao.appendChild(criar('span', 'faixa-selo', mapa.selo));
 
-    const capa = card.querySelector('.mapa-capa');
-    const imagem = capa.querySelector('img');
-    imagem.src = mapa.imagem;
-    // Se a imagem não carregar, fica só o fundo com o nome (em vez de um ícone quebrado)
-    imagem.addEventListener('error', () => capa.classList.add('sem-imagem'));
-
-    card.querySelector('.mapa-nome').textContent = mapa.nome;
-
-    const botao = capa.querySelector('.mapa-minimapa');
-    botao.setAttribute('aria-label', `Ver minimapa de ${mapa.nome}`);
-    botao.addEventListener('click', () => openMap(mapa.nome, mapa.minimapa));
-
-    if (mapa.selo) {
-        const selo = document.createElement('span');
-        selo.className = mapa.selo === 'Novo' ? 'selo selo-cheio' : 'selo';
-        selo.textContent = mapa.selo;
-        capa.appendChild(selo);
-    }
-
-    preencherFuncoes(card, mapa);
-    return card;
+        botao.addEventListener('click', () => escolherMapa(mapa));
+        faixa.appendChild(botao);
+    });
 }
 
-// Coloca no card as 4 funções com o meta escolhido (ranqueada ou pro)
-function preencherFuncoes(card, mapa) {
-    const fonte = card.querySelector('.mapa-fonte');
-    const caixa = card.querySelector('.funcoes');
-    caixa.innerHTML = '';
+function escolherMapa(mapa, { rolar = false } = {}) {
+    mapaAtual = mapa;
+    try { localStorage.setItem(CHAVE_MAPA, mapa.nome); } catch { }
+    // o endereço guarda o mapa (ex.: agentes.html#lotus), para mandar o link para alguém
+    try { history.replaceState(null, '', '#' + mapa.nome.toLowerCase()); } catch { }
 
-    const dados = metaAtual === 'ranqueada' ? mapa.ranqueada : mapa.pro;
-    if (!dados) {
-        fonte.textContent = 'Sem dados de campeonato';
-        const aviso = document.createElement('p');
-        aviso.className = 'mapa-sem-dados';
-        aviso.textContent = `${mapa.nome} não esteve nos campeonatos de 2026 que têm dados. Veja o meta da ranqueada.`;
-        caixa.appendChild(aviso);
+    document.querySelectorAll('.faixa-mapa').forEach(botao => {
+        const ativo = botao.dataset.mapa === mapa.nome;
+        botao.classList.toggle('ativo', ativo);
+        botao.setAttribute('aria-pressed', ativo);
+    });
+    document.querySelectorAll('.quadro-mapa button').forEach(botao => {
+        botao.classList.toggle('ativo', botao.dataset.mapa === mapa.nome);
+    });
+
+    const capa = document.getElementById('palco-capa');
+    capa.style.setProperty('--arte', `url(${mapa.imagem})`);
+    document.getElementById('palco-nome').textContent = mapa.nome;
+
+    const selo = document.getElementById('palco-selo');
+    selo.hidden = !mapa.selo;
+    selo.textContent = mapa.selo || '';
+
+    document.getElementById('palco-minimapa-img').src = mapa.minimapa;
+    document.getElementById('palco-minimapa').setAttribute('aria-label', `Ampliar minimapa de ${mapa.nome}`);
+
+    preencherPalco();
+    if (rolar) document.getElementById('palco').scrollIntoView({ block: 'start' });
+}
+
+// Fonte, legenda e as 5 cartas do mapa escolhido, no meta escolhido
+function preencherPalco() {
+    const mapa = mapaAtual;
+    const meta = METAS[metaAtual];
+    const lista = presencaNoMapa(mapa, metaAtual);
+
+    const info = document.getElementById('palco-info');
+    info.textContent = '';
+    const textoInfo = metaAtual === 'ranqueada'
+        ? `${mapa.ranqueada.escolhas.toLocaleString('pt-BR')} escolhas na ranqueada · `
+        : (mapa.pro ? `${mapa.pro.fonte} · ` : 'Sem dados de campeonato');
+    info.append(textoInfo);
+    if (lista) {
+        const link = criar('a', '', meta.fonte);
+        link.href = meta.url;
+        link.target = '_blank';
+        link.rel = 'noopener';
+        info.append(link, ` · ${meta.atualizadoEm}`);
+    }
+
+    const fileira = document.getElementById('fileira');
+    const exemplo = document.getElementById('palco-exemplo');
+    fileira.innerHTML = '';
+
+    if (!lista) {
+        exemplo.textContent = '';
+        fileira.appendChild(criar('li', 'fileira-vazia',
+            `${mapa.nome} não esteve nos campeonatos de 2026 que têm dados. Veja a ranqueada.`));
         return;
     }
 
-    fonte.textContent = metaAtual === 'ranqueada'
-        ? `${dados.escolhas.toLocaleString('pt-BR')} escolhas na ranqueada`
-        : dados.fonte;
+    const time = lista.slice(0, 5);
+    const primeiro = time[0];
+    exemplo.innerHTML = '<strong></strong> = <span></span>';
+    exemplo.querySelector('strong').textContent = `${AGENTES[primeiro.id].nome} ${primeiro.valor}%`;
+    exemplo.querySelector('span').textContent =
+        `${primeiro.valor} de cada 100 times jogaram com ${AGENTES[primeiro.id].nome}`;
 
-    calcularMeta(dados.pick, METAS[metaAtual]).forEach(grupo => {
-        caixa.appendChild(criarBlocoFuncao(grupo, mapa));
-    });
+    time.forEach(agente => fileira.appendChild(criarCarta(agente, lista, time)));
 }
 
-function criarBlocoFuncao({ funcao, doMeta, segunda }, mapa) {
-    const bloco = document.createElement('section');
-    bloco.className = 'funcao';
+function criarCarta(item, lista, time) {
+    const agente = AGENTES[item.id];
+    const carta = criar('li', 'carta');
 
-    const titulo = document.createElement('h4');
-    titulo.className = 'funcao-nome';
-    titulo.textContent = FUNCOES[funcao];
-    bloco.appendChild(titulo);
-
-    if (doMeta.length === 0) {
-        const vazio = document.createElement('p');
-        vazio.className = 'funcao-vazia';
-        vazio.textContent = 'Nenhum agente desta função entre os mais escolhidos.';
-        bloco.appendChild(vazio);
-        return bloco;
-    }
-
-    const lista = document.createElement('ul');
-    lista.className = 'funcao-lista';
-    doMeta.forEach(agente => lista.appendChild(criarLinhaAgente(agente, funcao, mapa, false)));
-    if (segunda) lista.appendChild(criarLinhaAgente(segunda, funcao, mapa, true));
-    bloco.appendChild(lista);
-    return bloco;
-}
-
-function criarLinhaAgente({ id, valor, barra }, funcao, mapa, ehSegunda) {
-    const agente = AGENTES[id];
-    const porcentagem = Math.round(barra);
-
-    const linha = document.createElement('li');
-    linha.className = ehSegunda ? 'agente-linha segunda' : 'agente-linha';
-    linha.title = metaAtual === 'ranqueada'
-        ? `${agente.nome}: ${porcentagem}% dos ${FUNCOES[funcao].toLowerCase()} escolhidos em ${mapa.nome} (${formatarDecimal(valor)} de todas as escolhas)`
-        : `${agente.nome}: escolhido por ${porcentagem}% dos times em ${mapa.nome}`;
-
-    // Foto (ou a inicial, para agente sem imagem no site)
-    let foto;
+    const retrato = criar('div', 'carta-retrato');
     if (agente.img) {
-        foto = document.createElement('img');
-        foto.src = agente.img;
-        foto.alt = '';
-        foto.loading = 'lazy';
+        const imagem = criar('img');
+        imagem.src = agente.img;
+        imagem.alt = '';
+        retrato.appendChild(imagem);
     } else {
-        foto = document.createElement('span');
-        foto.className = 'agente-sem-foto';
-        foto.textContent = agente.nome[0];
-    }
-    foto.classList.add('agente-foto');
-
-    const dadosAgente = document.createElement('div');
-    dadosAgente.className = 'agente-dados';
-    dadosAgente.innerHTML = `
-        <div class="agente-topo">
-            <span class="agente-nome"></span>
-            <span class="agente-valor"></span>
-        </div>
-        <div class="carga"><span></span></div>
-    `;
-    dadosAgente.querySelector('.agente-nome').textContent = agente.nome;
-    dadosAgente.querySelector('.agente-valor').textContent = `${porcentagem}%`;
-    dadosAgente.querySelector('.carga').style.setProperty('--valor', porcentagem);
-
-    if (ehSegunda) {
-        const tag = document.createElement('span');
-        tag.className = 'agente-tag';
-        tag.textContent = '2ª opção';
-        dadosAgente.querySelector('.agente-nome').after(tag);
+        retrato.appendChild(criar('span', 'carta-inicial', agente.nome[0]));
     }
 
-    linha.append(foto, dadosAgente);
-    return linha;
-}
+    const placa = criar('div', 'carta-placa');
+    placa.append(
+        criar('span', 'carta-funcao', NOME_FUNCAO[agente.funcao]),
+        criar('h4', 'carta-nome', agente.nome),
+    );
 
-// 15.1 -> "15,1%"
-function formatarDecimal(valor) {
-    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%';
-}
+    const medida = criar('div', 'carta-medida');
+    const numero = criar('span', 'carta-num');
+    numero.append(String(item.valor), criar('small', '', '%'));
+    numero.title = `${item.valor} de cada 100 times jogaram com ${agente.nome}`;
+    medida.append(numero, criarContagem(item.valor));
 
-function renderizarMapas() {
-    gridMapas.innerHTML = '';
-    MAPAS.forEach(mapa => gridMapas.appendChild(criarCardMapa(mapa)));
+    const subs = criar('div', 'carta-subs');
+    subs.appendChild(criar('span', 'subs-rotulo', 'Se já pegaram'));
+    const opcoes = substitutos(lista, item, time);
+    if (opcoes.length === 0) subs.appendChild(criar('span', 'subs-vazio', 'Sem outra opção nos dados'));
+    opcoes.forEach(opcao => {
+        const linha = criar('span', 'sub');
+        linha.append(
+            criarRosto(opcao.id),
+            criar('span', 'sub-nome', AGENTES[opcao.id].nome),
+            criar('span', 'sub-valor', `${opcao.valor}%`),
+        );
+        subs.appendChild(linha);
+    });
+
+    carta.append(retrato, placa, medida, subs);
+    return carta;
 }
 
 
 /* ============================================
-   3) LEGENDA (como ler as barras)
+   3) QUADRO (todos os mapas lado a lado)
    ============================================ */
 
-// Pega um exemplo real dos dados: o agente que mais domina uma função no 1º mapa
-function exemploDaLegenda(chave) {
-    const mapa = MAPAS.find(m => (chave === 'ranqueada' ? m.ranqueada : m.pro));
-    const dados = chave === 'ranqueada' ? mapa.ranqueada : mapa.pro;
-    const grupos = calcularMeta(dados.pick, METAS[chave]).filter(g => g.doMeta.length > 0);
-    const maior = grupos.reduce((a, b) => (b.doMeta[0].barra > a.doMeta[0].barra ? b : a));
-    const agente = maior.doMeta[0];
-    const nome = AGENTES[agente.id].nome;
+function montarQuadro() {
+    const tabela = document.getElementById('quadro');
+    tabela.innerHTML = '';
 
-    return chave === 'ranqueada'
-        ? `em ${mapa.nome}, ${Math.round(agente.barra)}% dos ${FUNCOES[maior.funcao].toLowerCase()} escolhidos são ${nome}.`
-        : `em ${mapa.nome}, ${Math.round(agente.barra)}% dos times escolheram ${nome}.`;
-}
+    // por mapa: { id: valor } e quem está entre os 5
+    const porMapa = MAPAS.map(mapa => {
+        const lista = presencaNoMapa(mapa, metaAtual);
+        if (!lista) return null;
+        return {
+            valores: Object.fromEntries(lista.map(a => [a.id, a.valor])),
+            top: new Set(lista.slice(0, 5).map(a => a.id)),
+        };
+    });
+    const somaDoAgente = id => porMapa.reduce((soma, d) => soma + (d ? d.valores[id] || 0 : 0), 0);
+    const aparece = id => porMapa.some(d => d && (d.valores[id] || 0) >= MINIMO_NO_QUADRO);
 
-function montarLegenda(chave) {
-    const meta = METAS[chave];
-    const legenda = document.getElementById('meta-legenda');
-    const regra = chave === 'ranqueada' ? `${meta.minimo}% ou mais da função` : `${meta.minimo}% ou mais dos times`;
-    const oQueMostra = chave === 'ranqueada'
-        ? 'A barra mostra a fatia de cada agente dentro da sua função'
-        : 'A barra mostra quantos times profissionais escolheram o agente';
+    // Cabeçalho: um botão por mapa
+    const cabeca = criar('thead');
+    const linhaCabeca = criar('tr');
+    linhaCabeca.appendChild(criar('th', 'quadro-canto', 'Agente'));
+    MAPAS.forEach(mapa => {
+        const th = criar('th', 'quadro-mapa');
+        th.scope = 'col';
+        const botao = criar('button');
+        botao.type = 'button';
+        botao.dataset.mapa = mapa.nome;
+        botao.classList.toggle('ativo', mapa === mapaAtual);
+        botao.setAttribute('aria-label', `Abrir ${mapa.nome} na seleção`);
+        const imagem = criar('img');
+        imagem.src = mapa.imagem;
+        imagem.alt = '';
+        imagem.loading = 'lazy';
+        botao.append(imagem, criar('span', '', mapa.nome));
+        botao.addEventListener('click', () => escolherMapa(mapa, { rolar: true }));
+        th.appendChild(botao);
+        linhaCabeca.appendChild(th);
+    });
+    cabeca.appendChild(linhaCabeca);
+    tabela.appendChild(cabeca);
 
-    legenda.innerHTML = `
-        <p><strong>${oQueMostra}.</strong> Exemplo: <span class="legenda-exemplo"></span></p>
-        <div class="legenda-amostras">
-            <span class="legenda-amostra"><span class="carga" style="--valor: 60"><span></span></span>Meta: ${regra}</span>
-            <span class="legenda-amostra segunda"><span class="carga" style="--valor: 30"><span></span></span>2ª opção: o próximo mais escolhido</span>
-        </div>
-        <p class="legenda-fonte">Fonte: <a target="_blank" rel="noopener"></a> (${meta.atualizadoEm}).</p>
-    `;
-    legenda.querySelector('.legenda-exemplo').textContent = exemploDaLegenda(chave);
-    const link = legenda.querySelector('a');
-    link.href = meta.url;
-    link.textContent = meta.fonte;
+    // Corpo: agentes agrupados por função, o mais jogado primeiro
+    const corpo = criar('tbody');
+    Object.entries(FUNCOES).forEach(([funcao, titulo]) => {
+        const ids = Object.keys(AGENTES)
+            .filter(id => AGENTES[id].funcao === funcao && aparece(id))
+            .sort((a, b) => somaDoAgente(b) - somaDoAgente(a));
+        if (ids.length === 0) return;
+
+        const grupo = criar('tr', 'quadro-grupo');
+        const celulaGrupo = criar('th');
+        celulaGrupo.appendChild(criar('span', '', titulo)); // o span fica parado quando o quadro rola
+        celulaGrupo.colSpan = MAPAS.length + 1;
+        celulaGrupo.scope = 'colgroup';
+        grupo.appendChild(celulaGrupo);
+        corpo.appendChild(grupo);
+
+        ids.forEach(id => {
+            const linha = criar('tr');
+            const nome = criar('th', 'quadro-agente');
+            nome.scope = 'row';
+            nome.append(criarRosto(id), criar('span', '', AGENTES[id].nome));
+            linha.appendChild(nome);
+
+            porMapa.forEach((dados, i) => {
+                const celula = criar('td');
+                if (!dados) {
+                    celula.className = 'sem';
+                    celula.textContent = '—';
+                    celula.title = `${MAPAS[i].nome}: sem dados de campeonato`;
+                } else {
+                    const valor = dados.valores[id] || 0;
+                    celula.style.setProperty('--v', valor);
+                    if (dados.top.has(id)) celula.classList.add('top');
+                    if (valor < 10) celula.classList.add('fraco');
+                    celula.textContent = valor >= 1 ? valor : '·';
+                    celula.title = `${AGENTES[id].nome} em ${MAPAS[i].nome}: ${valor}% dos times`;
+                }
+                linha.appendChild(celula);
+            });
+            corpo.appendChild(linha);
+        });
+    });
+    tabela.appendChild(corpo);
+
+    const meta = METAS[metaAtual];
+    document.getElementById('quadro-fonte').textContent = metaAtual === 'ranqueada'
+        ? `Fonte: ${meta.fonte}, ranqueada, ${meta.atualizadoEm}. Aparece quem passa de ${MINIMO_NO_QUADRO}% em algum mapa.`
+        : `Fonte: ${meta.fonte} (${meta.atualizadoEm}). Mapas sem campeonato com dados ficam com "—".`;
 }
 
 
 /* ============================================
    4) SELETOR "META" (RANQUEADA | PROFISSIONAL)
+   Há um na seleção e outro no quadro; os dois andam juntos.
    ============================================ */
 
-function criarSeletorMeta() {
-    const grupo = document.getElementById('opcoes-meta');
-    Object.entries(METAS).forEach(([chave, meta]) => {
-        const botao = document.createElement('button');
-        botao.type = 'button';
-        botao.dataset.meta = chave;
-        botao.textContent = meta.rotulo;
-        botao.addEventListener('click', () => escolherMeta(chave));
-        grupo.appendChild(botao);
+function criarSeletoresMeta() {
+    document.querySelectorAll('[data-grupo-meta]').forEach(grupo => {
+        Object.entries(METAS).forEach(([chave, meta]) => {
+            const botao = criar('button', '', meta.rotulo);
+            botao.type = 'button';
+            botao.dataset.meta = chave;
+            botao.addEventListener('click', () => escolherMeta(chave));
+            grupo.appendChild(botao);
+        });
     });
 }
 
@@ -266,22 +335,14 @@ function escolherMeta(chave) {
     metaAtual = chave;
     try { localStorage.setItem(CHAVE_META, chave); } catch { }
 
-    document.querySelectorAll('#opcoes-meta [data-meta]').forEach(botao => {
+    document.querySelectorAll('[data-grupo-meta] [data-meta]').forEach(botao => {
         const ativo = botao.dataset.meta === chave;
         botao.classList.toggle('active', ativo);
         botao.setAttribute('aria-pressed', ativo);
     });
 
-    montarLegenda(chave);
-    // Só troca o conteúdo dos cards (as imagens dos mapas não recarregam)
-    gridMapas.querySelectorAll('.mapa-card').forEach((card, i) => preencherFuncoes(card, MAPAS[i]));
-}
-
-function carregarMetaSalvo() {
-    try {
-        const salvo = localStorage.getItem(CHAVE_META);
-        if (METAS[salvo]) metaAtual = salvo;
-    } catch { }
+    preencherPalco();
+    montarQuadro();
 }
 
 
@@ -289,25 +350,38 @@ function carregarMetaSalvo() {
    INÍCIO
    ============================================ */
 
-// Linha acima do título com o patch atual
+// Qual mapa abrir: o do endereço (#lotus), senão o último visto, senão o 1º
+function mapaInicial() {
+    const doEndereco = decodeURIComponent(location.hash.slice(1)).toLowerCase();
+    let salvo = '';
+    try { salvo = (localStorage.getItem(CHAVE_MAPA) || '').toLowerCase(); } catch { }
+    return MAPAS.find(m => m.nome.toLowerCase() === doEndereco)
+        || MAPAS.find(m => m.nome.toLowerCase() === salvo)
+        || MAPAS[0];
+}
+
+function metaInicial() {
+    try {
+        const salvo = localStorage.getItem(CHAVE_META);
+        if (METAS[salvo]) return salvo;
+    } catch { }
+    return 'ranqueada';
+}
+
 document.getElementById('rotacao-info').textContent =
     `Patch ${ROTACAO.patch} · ${ROTACAO.temporada} · atualizado em ${ROTACAO.atualizadoEm}`;
 
-// Mapas fora da rotação
 const listaFora = document.getElementById('fora-rotacao');
-FORA_DA_ROTACAO.forEach(nome => {
-    const etiqueta = document.createElement('span');
-    etiqueta.className = 'etiqueta';
-    etiqueta.textContent = nome;
-    listaFora.appendChild(etiqueta);
-});
+FORA_DA_ROTACAO.forEach(nome => listaFora.appendChild(criar('span', 'etiqueta', nome)));
 
-carregarMetaSalvo();
-criarSeletorMeta();
-renderizarMapas();
+montarFaixaDeMapas();
+criarSeletoresMeta();
+metaAtual = metaInicial();
+escolherMapa(mapaInicial());
 escolherMeta(metaAtual);
 
-// Fecha o minimapa clicando fora da imagem ou apertando Esc
+// Minimapa ampliado
+document.getElementById('palco-minimapa').addEventListener('click', () => openMap(mapaAtual.nome, mapaAtual.minimapa));
 document.getElementById('mapModal').addEventListener('click', evento => {
     if (evento.target.id === 'mapModal') closeMap();
 });
