@@ -49,16 +49,14 @@ const AGENTES = {
     yoru: { nome: 'Yoru', img: 'assets/img-agentes/yoru.png' },
 };
 
-// O minimapa do Summit ainda não está na pasta assets: vem do valorant-api.com.
-// Quando tiver o arquivo, salve como assets/img-mapas/Summit_minimap.webp e troque abaixo.
-const SUMMIT_MINIMAPA_API = 'https://media.valorant-api.com/maps/756da597-416b-c0f2-f47b-afbdf28670bc/displayicon.png';
+// Todas as imagens ficam em assets/img-mapas (de onde veio cada uma: CREDITOS.md lá dentro)
 
 const MAPAS = [
     {
         nome: 'Summit',
         selo: 'Novo',
         imagem: 'assets/img-mapas/summit.webp',
-        minimapa: SUMMIT_MINIMAPA_API,
+        minimapa: 'assets/img-mapas/Summit_minimap.webp',
         fonte: 'Champions 2026 (pro)',
         agentes: [
             { id: 'neon', pick: 82 },
@@ -75,7 +73,7 @@ const MAPAS = [
         nome: 'Corrode',
         selo: 'Voltou',
         imagem: 'assets/img-mapas/corroid.jpg',
-        minimapa: 'assets/img-mapas/corrode.jpg',
+        minimapa: 'assets/img-mapas/Corrode_minimap.webp',
         fonte: 'Ranqueada (fora do campeonato de 2026)',
         agentes: [
             { id: 'neon' },
