@@ -50,26 +50,63 @@ function criarCardMapa(mapa) {
     return card;
 }
 
-// Coloca no card os agentes do meta escolhido (ranqueada ou pro)
+// Coloca no card os agentes do meta escolhido (ranqueada ou pro), separados por função
 function preencherAgentes(card, mapa) {
     const fonte = card.querySelector('.mapa-fonte');
     const lista = card.querySelector('.agentes-lista');
     lista.innerHTML = '';
 
-    if (metaAtual === 'ranqueada') {
-        const escolhas = mapa.ranqueada.escolhas.toLocaleString('pt-BR');
-        fonte.textContent = `Base: ${escolhas} escolhas na ranqueada`;
-        mapa.ranqueada.agentes.forEach(({ id, pick }) => lista.appendChild(criarAgente(id, formatarDecimal(pick))));
-        return;
-    }
+    const dados = metaAtual === 'ranqueada' ? mapa.ranqueada : mapa.pro;
 
     // Profissional: alguns mapas não tiveram campeonato com dados
-    if (!mapa.pro) {
+    if (!dados) {
         fonte.textContent = `${mapa.nome} não esteve nos campeonatos de 2026 com dados.`;
         return;
     }
-    fonte.textContent = `Base: ${mapa.pro.fonte}`;
-    mapa.pro.agentes.forEach(({ id, pick }) => lista.appendChild(criarAgente(id, `${pick}%`)));
+
+    fonte.textContent = metaAtual === 'ranqueada'
+        ? `Base: ${dados.escolhas.toLocaleString('pt-BR')} escolhas na ranqueada`
+        : `Base: ${dados.fonte}`;
+
+    const formatar = metaAtual === 'ranqueada' ? formatarDecimal : valor => `${valor}%`;
+    const grupos = agentesPorFuncao(dados.agentes, METAS[metaAtual].minimo);
+
+    Object.entries(grupos).forEach(([funcao, agentes]) => {
+        const grupo = document.createElement('section');
+        grupo.className = 'funcao-grupo';
+        // Quantas das 6 colunas do card a função ocupa: 1 por agente, no mínimo 2 (pro título caber)
+        grupo.style.setProperty('--colunas', Math.min(6, Math.max(2, agentes.length)));
+
+        const titulo = document.createElement('h4');
+        titulo.className = 'funcao-titulo';
+        titulo.textContent = FUNCOES[funcao];
+
+        const agentesDaFuncao = document.createElement('div');
+        agentesDaFuncao.className = 'funcao-agentes';
+        agentes.forEach(({ id, pick }) => agentesDaFuncao.appendChild(criarAgente(id, formatar(pick))));
+
+        grupo.append(titulo, agentesDaFuncao);
+        lista.appendChild(grupo);
+    });
+}
+
+/**
+ * Separa os agentes por função (na ordem de FUNCOES) e, em cada função,
+ * deixa só os que têm pelo menos "minimo"%. O mais escolhido da função
+ * sempre aparece, mesmo abaixo do mínimo. Função sem nenhum agente na lista fica de fora.
+ */
+function agentesPorFuncao(agentes, minimo) {
+    const grupos = {};
+    Object.keys(FUNCOES).forEach(funcao => {
+        const daFuncao = agentes
+            .filter(({ id }) => AGENTES[id].funcao === funcao)
+            .sort((a, b) => b.pick - a.pick);
+        if (daFuncao.length === 0) return;
+
+        const acimaDoMinimo = daFuncao.filter(({ pick }) => pick >= minimo);
+        grupos[funcao] = acimaDoMinimo.length > 0 ? acimaDoMinimo : [daFuncao[0]];
+    });
+    return grupos;
 }
 
 // 15.1 -> "15,1%" (sempre com uma casa decimal, no formato brasileiro)

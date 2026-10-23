@@ -8,13 +8,16 @@
    - FORA_DA_ROTACAO: nomes dos mapas que saíram
 
    Em cada mapa:
-   - "ranqueada": 8 agentes mais escolhidos na ranqueada, em ordem.
+   - "ranqueada": os 10 agentes mais escolhidos na ranqueada.
      "pick" = % de todas as escolhas de agente naquele mapa
      (ex.: 15 = de cada 100 agentes escolhidos, 15 foram esse).
      "escolhas" = quantas escolhas de agente entraram na conta.
    - "pro": agentes mais escolhidos em campeonato.
      "pick" = % dos times profissionais que escolheram o agente.
      Use null quando o mapa não teve partidas de campeonato.
+
+   A página separa os agentes por função e mostra, em cada função,
+   os que têm pelo menos "minimo"% (em METAS) — e sempre o 1º da função.
 */
 
 const ROTACAO = {
@@ -27,50 +30,60 @@ const ROTACAO = {
 const METAS = {
     ranqueada: {
         rotulo: 'Ranqueada',
-        legenda: 'O que os jogadores mais estão escolhendo na ranqueada (todos os elos e regiões). A porcentagem é a fatia de todas as escolhas de agente naquele mapa.',
+        minimo: 5, // aparece quem tem pelo menos 5% das escolhas no mapa
+        legenda: 'O que os jogadores mais estão escolhendo na ranqueada (todos os elos e regiões), separado por função. A porcentagem é a fatia de todas as escolhas de agente no mapa; aparecem os agentes com pelo menos 5% e sempre o mais escolhido de cada função.',
         fonte: 'MetaBot.gg',
         url: 'https://metabot.gg/en/valorant',
         atualizadoEm: '22 de outubro de 2026',
     },
     pro: {
         rotulo: 'Profissional',
-        legenda: 'O que os times profissionais escolheram nos campeonatos de 2026. A porcentagem é quantos times escolheram o agente naquele mapa.',
+        minimo: 25, // aparece quem foi escolhido por pelo menos 25% dos times
+        legenda: 'O que os times profissionais escolheram nos campeonatos de 2026, separado por função. A porcentagem é quantos times escolheram o agente no mapa; aparecem os agentes com pelo menos 25% e sempre o mais escolhido de cada função.',
         fonte: 'VLR.gg',
         url: 'https://www.vlr.gg/event/agents/2766/valorant-champions-2026',
         atualizadoEm: 'outubro de 2026',
     },
 };
 
-// Nome que aparece na tela + caminho da imagem de cada agente
+// Funções, na ordem em que aparecem nos cards
+const FUNCOES = {
+    duelista: 'Duelistas',
+    iniciador: 'Iniciadores',
+    controlador: 'Controladores',
+    sentinela: 'Sentinelas',
+};
+
+// Nome que aparece na tela, imagem e função de cada agente
 const AGENTES = {
-    astra: { nome: 'Astra', img: 'assets/img-agentes/astra.png' },
-    breach: { nome: 'Breach', img: 'assets/img-agentes/breach.png' },
-    brimstone: { nome: 'Brimstone', img: 'assets/img-agentes/brimstone.png' },
-    chamber: { nome: 'Chamber', img: 'assets/img-agentes/chamber.png' },
-    clove: { nome: 'Clove', img: 'assets/img-agentes/clove.png' },
-    cypher: { nome: 'Cypher', img: 'assets/img-agentes/cypher.png' },
-    deadlock: { nome: 'Deadlock', img: 'assets/img-agentes/deadlock.png' },
-    fade: { nome: 'Fade', img: 'assets/img-agentes/fade.png' },
-    gekko: { nome: 'Gekko', img: 'assets/img-agentes/gekko.png' },
-    harbor: { nome: 'Harbor', img: 'assets/img-agentes/harbor.png' },
-    iso: { nome: 'Iso', img: 'assets/img-agentes/iso.png' },
-    jett: { nome: 'Jett', img: 'assets/img-agentes/jett.png' },
-    kayo: { nome: 'KAY/O', img: 'assets/img-agentes/kayo.png' },
-    killjoy: { nome: 'Killjoy', img: 'assets/img-agentes/killjoy.png' },
-    neon: { nome: 'Neon', img: 'assets/img-agentes/neon.png' },
-    omen: { nome: 'Omen', img: 'assets/img-agentes/omen.png' },
-    phoenix: { nome: 'Phoenix', img: 'assets/img-agentes/phoenix.png' },
-    raze: { nome: 'Raze', img: 'assets/img-agentes/raze.png' },
-    reyna: { nome: 'Reyna', img: 'assets/img-agentes/reyna.png' },
-    sage: { nome: 'Sage', img: 'assets/img-agentes/sage.png' },
-    skye: { nome: 'Skye', img: 'assets/img-agentes/skye.png' },
-    sova: { nome: 'Sova', img: 'assets/img-agentes/sova.png' },
-    tejo: { nome: 'Tejo', img: 'assets/img-agentes/tejo.jpg' },
-    veto: { nome: 'Veto', img: 'assets/img-agentes/veto.png' },
-    viper: { nome: 'Viper', img: 'assets/img-agentes/viper.png' },
-    vyse: { nome: 'Vyse', img: 'assets/img-agentes/vyse.png' },
-    waylay: { nome: 'Waylay', img: 'assets/img-agentes/waylay.png' },
-    yoru: { nome: 'Yoru', img: 'assets/img-agentes/yoru.png' },
+    astra: { nome: 'Astra', img: 'assets/img-agentes/astra.png', funcao: 'controlador' },
+    breach: { nome: 'Breach', img: 'assets/img-agentes/breach.png', funcao: 'iniciador' },
+    brimstone: { nome: 'Brimstone', img: 'assets/img-agentes/brimstone.png', funcao: 'controlador' },
+    chamber: { nome: 'Chamber', img: 'assets/img-agentes/chamber.png', funcao: 'sentinela' },
+    clove: { nome: 'Clove', img: 'assets/img-agentes/clove.png', funcao: 'controlador' },
+    cypher: { nome: 'Cypher', img: 'assets/img-agentes/cypher.png', funcao: 'sentinela' },
+    deadlock: { nome: 'Deadlock', img: 'assets/img-agentes/deadlock.png', funcao: 'sentinela' },
+    fade: { nome: 'Fade', img: 'assets/img-agentes/fade.png', funcao: 'iniciador' },
+    gekko: { nome: 'Gekko', img: 'assets/img-agentes/gekko.png', funcao: 'iniciador' },
+    harbor: { nome: 'Harbor', img: 'assets/img-agentes/harbor.png', funcao: 'controlador' },
+    iso: { nome: 'Iso', img: 'assets/img-agentes/iso.png', funcao: 'duelista' },
+    jett: { nome: 'Jett', img: 'assets/img-agentes/jett.png', funcao: 'duelista' },
+    kayo: { nome: 'KAY/O', img: 'assets/img-agentes/kayo.png', funcao: 'iniciador' },
+    killjoy: { nome: 'Killjoy', img: 'assets/img-agentes/killjoy.png', funcao: 'sentinela' },
+    neon: { nome: 'Neon', img: 'assets/img-agentes/neon.png', funcao: 'duelista' },
+    omen: { nome: 'Omen', img: 'assets/img-agentes/omen.png', funcao: 'controlador' },
+    phoenix: { nome: 'Phoenix', img: 'assets/img-agentes/phoenix.png', funcao: 'duelista' },
+    raze: { nome: 'Raze', img: 'assets/img-agentes/raze.png', funcao: 'duelista' },
+    reyna: { nome: 'Reyna', img: 'assets/img-agentes/reyna.png', funcao: 'duelista' },
+    sage: { nome: 'Sage', img: 'assets/img-agentes/sage.png', funcao: 'sentinela' },
+    skye: { nome: 'Skye', img: 'assets/img-agentes/skye.png', funcao: 'iniciador' },
+    sova: { nome: 'Sova', img: 'assets/img-agentes/sova.png', funcao: 'iniciador' },
+    tejo: { nome: 'Tejo', img: 'assets/img-agentes/tejo.jpg', funcao: 'iniciador' },
+    veto: { nome: 'Veto', img: 'assets/img-agentes/veto.png', funcao: 'sentinela' },
+    viper: { nome: 'Viper', img: 'assets/img-agentes/viper.png', funcao: 'controlador' },
+    vyse: { nome: 'Vyse', img: 'assets/img-agentes/vyse.png', funcao: 'sentinela' },
+    waylay: { nome: 'Waylay', img: 'assets/img-agentes/waylay.png', funcao: 'duelista' },
+    yoru: { nome: 'Yoru', img: 'assets/img-agentes/yoru.png', funcao: 'duelista' },
 };
 
 // Todas as imagens ficam em assets/img-mapas (de onde veio cada uma: CREDITOS.md lá dentro)
@@ -92,6 +105,8 @@ const MAPAS = [
                 { id: 'neon', pick: 7.4 },
                 { id: 'cypher', pick: 5.7 },
                 { id: 'phoenix', pick: 5.5 },
+                { id: 'waylay', pick: 3.7 },
+                { id: 'sage', pick: 2.8 },
             ],
         },
         pro: {
@@ -124,6 +139,8 @@ const MAPAS = [
                 { id: 'reyna', pick: 7.0 },
                 { id: 'neon', pick: 6.4 },
                 { id: 'yoru', pick: 6.3 },
+                { id: 'vyse', pick: 4.1 },
+                { id: 'omen', pick: 2.5 },
             ],
         },
         pro: null, // não esteve no Champions 2026 nem nos VCTs com dados
@@ -144,6 +161,8 @@ const MAPAS = [
                 { id: 'fade', pick: 6.9 },
                 { id: 'yoru', pick: 6.4 },
                 { id: 'reyna', pick: 6.3 },
+                { id: 'waylay', pick: 5.8 },
+                { id: 'neon', pick: 4.2 },
             ],
         },
         pro: {
@@ -175,6 +194,8 @@ const MAPAS = [
                 { id: 'neon', pick: 6.4 },
                 { id: 'phoenix', pick: 6.0 },
                 { id: 'cypher', pick: 5.1 },
+                { id: 'killjoy', pick: 4.9 },
+                { id: 'omen', pick: 3.8 },
             ],
         },
         pro: {
@@ -206,6 +227,8 @@ const MAPAS = [
                 { id: 'reyna', pick: 7.3 },
                 { id: 'cypher', pick: 6.1 },
                 { id: 'phoenix', pick: 5.8 },
+                { id: 'raze', pick: 3.9 },
+                { id: 'omen', pick: 2.9 },
             ],
         },
         pro: {
@@ -237,6 +260,8 @@ const MAPAS = [
                 { id: 'neon', pick: 7.4 },
                 { id: 'reyna', pick: 6.5 },
                 { id: 'omen', pick: 4.0 },
+                { id: 'vyse', pick: 3.9 },
+                { id: 'waylay', pick: 3.0 },
             ],
         },
         pro: {
@@ -268,6 +293,8 @@ const MAPAS = [
                 { id: 'yoru', pick: 6.5 },
                 { id: 'reyna', pick: 6.4 },
                 { id: 'astra', pick: 3.3 },
+                { id: 'neon', pick: 3.1 },
+                { id: 'iso', pick: 2.1 },
             ],
         },
         pro: {

@@ -1077,7 +1077,7 @@ textarea {
 }
 
 .mapa-corpo {
-    padding: 14px 6px 6px;
+    padding: 14px 2px 6px;
 }
 
 .mapa-fonte {
@@ -1086,10 +1086,45 @@ textarea {
     color: var(--cor-suave);
 }
 
+/* Um bloco por função (Duelistas, Iniciadores...), lado a lado numa grade de 6 colunas.
+   Cada bloco ocupa --colunas colunas (definido no agentes.js). */
 .agentes-lista {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px 8px;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 16px 4px;
+}
+
+.funcao-grupo {
+    grid-column: span var(--colunas, 2);
+    min-width: 0;
+}
+
+.funcao-titulo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-family: var(--fonte-mono);
+    font-size: 0.64rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: var(--cor-suave);
+}
+
+/* linha fina depois do nome da função */
+.funcao-titulo::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--cor-linha);
+}
+
+.funcao-agentes {
+    display: grid;
+    grid-template-columns: repeat(var(--colunas, 2), minmax(0, 1fr));
+    gap: 12px 4px;
 }
 
 .agente {
@@ -1102,7 +1137,7 @@ textarea {
 
 .agente img {
     width: 100%;
-    max-width: 60px;
+    max-width: 46px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     margin-bottom: 6px;
@@ -1111,9 +1146,12 @@ textarea {
 }
 
 .agente-nome {
-    max-width: 100%;
+    /* pode usar 4px de cada lado (o espaço entre colunas) para nomes longos como "Brimstone" */
+    max-width: calc(100% + 8px);
+    margin-inline: -4px;
     overflow: hidden;
-    font-size: 0.8rem;
+    font-size: 0.74rem;
+    letter-spacing: -0.01em;
     font-weight: 600;
     line-height: 1.3;
     white-space: nowrap;
@@ -1309,6 +1347,13 @@ textarea {
 
     .grade-4 {
         grid-template-columns: 1fr;
+    }
+}
+
+/* celulares bem estreitos: nome do agente um pouco menor para caber "Brimstone" */
+@media (max-width: 380px) {
+    .agente-nome {
+        font-size: 0.68rem;
     }
 }
 
